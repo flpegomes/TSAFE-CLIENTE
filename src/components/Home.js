@@ -12,6 +12,7 @@ const Home = ({ navigation }) => (
     </View>
 );
 
+
 const styles = StyleSheet.create({
     homeContainer: {
         flex:1,
