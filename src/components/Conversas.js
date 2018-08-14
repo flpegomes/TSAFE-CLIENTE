@@ -91,7 +91,7 @@ const styles = StyleSheet.create({
     },
     containerChat: {
         padding: 20,
-        backgroundColor: '#000',
+        backgroundColor: '#fff',
         marginBottom: 20,
         borderRadius: 5,
         flexDirection: 'row',
