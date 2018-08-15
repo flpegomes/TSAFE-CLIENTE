@@ -52,6 +52,7 @@
 		B08A7F3EAFB84721AE014C40 /* Octicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 409488E134014812B3947EFB /* Octicons.ttf */; };
 		281E021B156648128BC7FD40 /* SimpleLineIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B9D5C349E7C744A68D9E893D /* SimpleLineIcons.ttf */; };
 		1163296FA6E24934A5CD3D14 /* Zocial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C6200634A5B546D6947C31C2 /* Zocial.ttf */; };
+		98FF94D256704955A51CBEDF /* libRCTMGL.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B6BCD6E43B004EE09AF3E638 /* libRCTMGL.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -373,6 +374,8 @@
 		409488E134014812B3947EFB /* Octicons.ttf */ = {isa = PBXFileReference; name = "Octicons.ttf"; path = "../node_modules/react-native-vector-icons/Fonts/Octicons.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 		B9D5C349E7C744A68D9E893D /* SimpleLineIcons.ttf */ = {isa = PBXFileReference; name = "SimpleLineIcons.ttf"; path = "../node_modules/react-native-vector-icons/Fonts/SimpleLineIcons.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 		C6200634A5B546D6947C31C2 /* Zocial.ttf */ = {isa = PBXFileReference; name = "Zocial.ttf"; path = "../node_modules/react-native-vector-icons/Fonts/Zocial.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		517DED11AF23472F9FB61C40 /* RCTMGL.xcodeproj */ = {isa = PBXFileReference; name = "RCTMGL.xcodeproj"; path = "../node_modules/@mapbox/react-native-mapbox-gl/ios/RCTMGL.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
+		B6BCD6E43B004EE09AF3E638 /* libRCTMGL.a */ = {isa = PBXFileReference; name = "libRCTMGL.a"; path = "libRCTMGL.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -402,6 +405,7 @@
 				00C302EA1ABCBA2D00DB3ED1 /* libRCTVibration.a in Frameworks */,
 				139FDEF61B0652A700C62182 /* libRCTWebSocket.a in Frameworks */,
 				CD8EB53F1F554866A4805FF7 /* libRNVectorIcons.a in Frameworks */,
+				98FF94D256704955A51CBEDF /* libRCTMGL.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -589,6 +593,7 @@
 				00C302DF1ABCB9EE00DB3ED1 /* RCTVibration.xcodeproj */,
 				139FDEE61B06529A00C62182 /* RCTWebSocket.xcodeproj */,
 				303F855A6AB54B0D9A52E49C /* RNVectorIcons.xcodeproj */,
+				517DED11AF23472F9FB61C40 /* RCTMGL.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -1253,10 +1258,12 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)\..\node_modules\react-native-vector-icons\RNVectorIconsManager",
+					"$(SRCROOT)\..\node_modules\@mapbox\react-native-mapbox-gl\ios\RCTMGL",
 				);
 			};
 			name = Debug;
@@ -1278,10 +1285,12 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)\..\node_modules\react-native-vector-icons\RNVectorIconsManager",
+					"$(SRCROOT)\..\node_modules\@mapbox\react-native-mapbox-gl\ios\RCTMGL",
 				);
 			};
 			name = Release;
@@ -1304,6 +1313,7 @@
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)\..\node_modules\react-native-vector-icons\RNVectorIconsManager",
+					"$(SRCROOT)\..\node_modules\@mapbox\react-native-mapbox-gl\ios\RCTMGL",
 				);
 			};
 			name = Debug;
@@ -1325,6 +1335,7 @@
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)\..\node_modules\react-native-vector-icons\RNVectorIconsManager",
+					"$(SRCROOT)\..\node_modules\@mapbox\react-native-mapbox-gl\ios\RCTMGL",
 				);
 			};
 			name = Release;
@@ -1355,10 +1366,12 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)\..\node_modules\react-native-vector-icons\RNVectorIconsManager",
+					"$(SRCROOT)\..\node_modules\@mapbox\react-native-mapbox-gl\ios\RCTMGL",
 				);
 			};
 			name = Debug;
@@ -1389,10 +1402,12 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)\..\node_modules\react-native-vector-icons\RNVectorIconsManager",
+					"$(SRCROOT)\..\node_modules\@mapbox\react-native-mapbox-gl\ios\RCTMGL",
 				);
 			};
 			name = Release;
@@ -1422,10 +1437,12 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)\..\node_modules\react-native-vector-icons\RNVectorIconsManager",
+					"$(SRCROOT)\..\node_modules\@mapbox\react-native-mapbox-gl\ios\RCTMGL",
 				);
 			};
 			name = Debug;
@@ -1455,10 +1472,12 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)\..\node_modules\react-native-vector-icons\RNVectorIconsManager",
+					"$(SRCROOT)\..\node_modules\@mapbox\react-native-mapbox-gl\ios\RCTMGL",
 				);
 			};
 			name = Release;

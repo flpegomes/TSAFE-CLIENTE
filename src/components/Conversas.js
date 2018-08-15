@@ -1,119 +1,38 @@
-import React from 'react';
-import { View, Button, Text, StyleSheet, ScrollView, Image } from 'react-native';
-import Icon from 'react-native-vector-icons/Entypo'
+import React, { Fragment } from 'react';
+import { Container, Header, Left, Right, Body, Title, Button, Icon, View, Fab, List, ListItem, Thumbnail, Text, Badge, Content, Tab, Tabs, TabHeading, Card, CardItem } from 'native-base';
+import { Image, StyleSheet } from 'react-native';
 
-const Conversas = ({ navigation }) => (
-    <View style={styles.a}>
-    <ScrollView>
-        <View style={styles.containerChat}> 
-            <Image 
-                style={styles.chatImage}
-                source={{uri:   'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTl-s6mvhAqk5oMNjca6nxc4ICnCV_7mIsIIbkDOSFoIIXEK3BZ'}}
-            />
-
-            <View style={styles.chatInfo}>
-                <Text style={styles.chatNome}> Berg </Text>
-                <Text style={styles.ultimaMensagem}> Salve, meu consagrado </Text>
-            </View>
-        </View> 
-
-        <View style={styles.containerChat}> 
-            <Image 
-                style={styles.chatImage}
-                source={{uri:   'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTl-s6mvhAqk5oMNjca6nxc4ICnCV_7mIsIIbkDOSFoIIXEK3BZ'}}
-            />
-
-            <View style={styles.chatInfo}>
-                <Text style={styles.chatNome}> Berg </Text>
-                <Text style={styles.ultimaMensagem}> Salve, meu consagrado </Text>
-            </View>
-        </View> 
-
-        <View style={styles.containerChat}> 
-            <Image 
-                style={styles.chatImage}
-                source={{uri:   'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTl-s6mvhAqk5oMNjca6nxc4ICnCV_7mIsIIbkDOSFoIIXEK3BZ'}}
-            />
-
-            <View style={styles.chatInfo}>
-                <Text style={styles.chatNome}> Berg </Text>
-                <Text style={styles.ultimaMensagem}> Salve, meu consagrado </Text>
-            </View>
-        </View> 
-
-        <View style={styles.containerChat}> 
-            <Image 
-                style={styles.chatImage}
-                source={{uri:   'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTl-s6mvhAqk5oMNjca6nxc4ICnCV_7mIsIIbkDOSFoIIXEK3BZ'}}
-            />
-
-            <View style={styles.chatInfo}>
-                <Text style={styles.chatNome}> Berg </Text>
-                <Text style={styles.ultimaMensagem}> Salve, meu consagrado </Text>
-            </View>
-        </View> 
-
-        <View style={styles.containerChat}> 
-            <Image 
-                style={styles.chatImage}
-                source={{uri:   'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTl-s6mvhAqk5oMNjca6nxc4ICnCV_7mIsIIbkDOSFoIIXEK3BZ'}}
-            />
-
-            <View style={styles.chatInfo}>
-                <Text style={styles.chatNome}> Berg </Text>
-                <Text style={styles.ultimaMensagem}> Salve, meu consagrado </Text>
-            </View>
-        </View> 
-
-        <View style={styles.containerChat}> 
-            <Image 
-                style={styles.chatImage}
-                source={{uri:   'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTl-s6mvhAqk5oMNjca6nxc4ICnCV_7mIsIIbkDOSFoIIXEK3BZ'}}
-            />
-
-            <View style={styles.chatInfo}>
-                <Text style={styles.chatNome}> Berg </Text>
-                <Text style={styles.ultimaMensagem}> Salve, meu consagrado </Text>
-            </View>
-        </View> 
-        </ScrollView>
-    </View>
+//import Icon from 'react-native-vector-icons/Entypo'
 
 
-);
+const Conversas = ({ messages }) => (
+    <Fragment>
+      <List>
+        {messages.map( message => (
+          <ListItem avatar key={message.id}>
+            <Left>
+              <Thumbnail source={{ uri: message.avatar_url}} />
+            </Left>
+            <Body>
+              <Text>{message.name}</Text>
+              <Text note>{message.last_message}</Text>
+            </Body>
+            <Right>
+              <Text note>{message.time}</Text>
+            </Right>
+          </ListItem>
+        ))}
+      </List>
+      <Fab
+        direction="up"
+        position="bottomRight"
+        style={{ backgroundColor: "#fadf63"}}
+      >
+        <Icon type="FontAwesome" name="plus" />
+      </Fab>
+    </Fragment>
+  );
 
-
-const styles = StyleSheet.create({
-    a: {
-        backgroundColor:'#333',
-        flex: 1,
-        padding: 20,
-    },
-    containerChat: {
-        padding: 20,
-        backgroundColor: '#fff',
-        marginBottom: 20,
-        borderRadius: 5,
-        flexDirection: 'row',
-        alignItems: 'center',
-      },
-      chatImage: {
-          width: 50,
-          height: 50,
-          borderRadius: 25,
-      },
-      chatInfo: {
-          marginLeft: 10,
-      },
-      chatNome: {
-          fontWeight: 'bold',
-          color: '#333',
-      },
-      ultimaMensagem: {
-          fontSize: 14,
-          color: '#999',
-      }
-})
 
 Conversas.navigationOptions = {
     tabBarIcon: <Icon name="message" size={18} color="#999" />
