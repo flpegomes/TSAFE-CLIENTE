@@ -1,7 +1,7 @@
-import Home from './components/Mapa.js';
-import Perfil from './components/Perfil';
-import Pagamento from './components/Pagamento';
-import Conversas from './components/Conversas';
+import Home from './Mapa.js';
+import Perfil from './Perfil';
+import Pagamento from './Pagamento';
+import Conversas from './Conversas';
 
 
 import React, { Fragment } from 'react';
