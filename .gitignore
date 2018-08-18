@@ -28,7 +28,8 @@ build/
 .idea
 .gradle
 local.properties
-*.iml
+*.iml~
+AndroidManifest.xml
 
 # node.js
 #

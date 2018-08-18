@@ -1,22 +1,35 @@
 import React from 'react';
-import { View, Text, Button, TextInput, StyleSheet, TouchableHighlight } from 'react-native';
+import { View, Text, Button, TextInput, StyleSheet, Image, TouchableHighlight, TouchableOpacity } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 
 export default props => (
     <View style={styles.container}> 
         <View style={styles.titleContainer}>
-            <Text style={styles.textTitle}> LOGIN </Text>
+            <Image 
+                source={require('../Images/teste2.png')}
+                style={{width: 335, height: 136, marginRight: 30}}
+            />
         </View>
         <View style={styles.formContainer}>
-            <TextInput style={styles.input} placeholder="Email" />
-            <TextInput style={styles.input} placeholder="Senha" />
+            <TextInput style={styles.input} 
+                placeholder="email" 
+                underlineColorAndroid='transparent'    
+                placeholderTextColor='#999'
+            />
+            <TextInput style={styles.input} 
+                placeholder="senha" 
+                underlineColorAndroid='transparent'
+                placeholderTextColor='#999'
+                secureTextEntry={true}
+
+            />
             <TouchableHighlight onPress={() => Actions.Cadastro()}>
-                <Text style={{fontSize: 14}}>Ainda não tem cadastro? Cadastre-se</Text>
+                <Text style={styles.msgCadastro}>Ainda não tem cadastro? Cadastre-se</Text>
             </TouchableHighlight>
         </View>        
-        <View style={styles.buttonContainer}>
-            <Button title="Acessar" color='#333' onPress={() => false} />
-        </View>
+        <TouchableOpacity style={styles.buttonContainer}>
+            <Text style={styles.textButton}> ENTRAR </Text>
+        </TouchableOpacity>
 
     </View>
 
@@ -25,24 +38,48 @@ export default props => (
 const styles = StyleSheet.create({
     container: {
         flex:1, 
-        padding: 10,
+        padding: 20,
+        backgroundColor: '#323232'
     },
     titleContainer: {
-        flex:1, 
+        flex:3, 
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
     },
     textTitle: {
         fontSize:25, 
+        color: '#f9dc36',
     },
     formContainer: {
         flex:2,
+
     },
     buttonContainer: {
-        flex: 2,
+        backgroundColor: '#f9dc36',
+        borderRadius: 10,
+        justifyContent: 'center',
+        alignItems: 'center' ,
+        height: 45
+    },
+    textButton: {
+        fontWeight: 'bold',
+        fontSize: 14,
+        color: '#333',
     },
     input: {
-        fontSize: 20,
+        fontSize: 14,
         height: 45,
+        backgroundColor: '#444',
+        marginTop: 10,
+        borderRadius: 5,
+        paddingHorizontal: 15,
+        color:'#fff'
+          
+    },
+    msgCadastro: {
+        fontSize: 14,
+        paddingHorizontal: 10,
+        paddingVertical: 20,
+        color: '#f9dc36',
     }
 });
