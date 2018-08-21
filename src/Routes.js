@@ -10,6 +10,8 @@ export default props => (
         <Stack key='root'>
             <Scene key='Login' component={Login} hideNavBar={true} />
             <Scene key='Cadastro' component={Cadastro} title="Cadastro" />
+            <Scene key='Principal' component={Principal} title="Principal" hideNavBar={true} />
+
         </Stack>
     </Router>
 

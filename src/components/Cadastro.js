@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import { View, TextInput, Button, StyleSheet, TouchableOpacity, Text} from 'react-native';
+import { View, TextInput, Button, StyleSheet, TouchableOpacity, Text, ActivityIndicator} from 'react-native';
 import { connect } from 'react-redux';
+import { Toast } from 'native-base';
 import { modificaEmail, modificaSenha, modificaNome, cadastraUsuario } from '../Actions/AutenticacaoActions';
 
 class cadastro extends Component {
@@ -10,6 +11,22 @@ class cadastro extends Component {
         const { nome, email, senha} = this.props;
         this.props.cadastraUsuario({nome, email, senha});
     }
+
+    renderBtnCadastrar() {
+        if(this.props.loadingCadastro) {
+            return (
+                <ActivityIndicator size='large' />
+            )        
+        }
+        
+        return (
+            <TouchableOpacity style={styles.buttonContainer} onPress={() => this._cadastraUsuario()}>
+                        <Text style={styles.textButton}> CADASTRAR </Text>
+            </TouchableOpacity>
+        )
+    }
+
+    
     render() {
         return (
             <View style={styles.container} >
@@ -39,10 +56,12 @@ class cadastro extends Component {
                     underlineColorAndroid='transparent'    
                     placeholderTextColor='#999'
                 />
+                <View style={styles.msgErroContainer}> 
+                    <Text style={styles.msgErro}>{this.props.erroCadastro} </Text> 
                 </View>
-                <TouchableOpacity style={styles.buttonContainer} onPress={() => this._cadastraUsuario()}>
-                        <Text style={styles.textButton}> CADASTRAR </Text>
-                </TouchableOpacity>
+                </View>
+                {this.renderBtnCadastrar()}
+                
             </View> 
         );
     }
@@ -79,6 +98,16 @@ const styles = StyleSheet.create({
         borderRadius: 3,
         paddingHorizontal: 15,
         color:'#fff'
+    },
+    msgErro: {
+        color: '#ff0000',
+        fontSize: 12,
+    },
+    msgErroContainer: {
+        marginTop: 10,
+        borderRadius: 3,
+       // backgroundColor: '#222'
+       alignItems:'flex-end'
     }
 });
 
@@ -86,8 +115,11 @@ const mapStateToProps = state => (
     {
         nome: state.AutenticacaoReducer.nome,
         email: state.AutenticacaoReducer.email,
-        senha: state.AutenticacaoReducer.senha
+        senha: state.AutenticacaoReducer.senha,
+        erroCadastro: state.AutenticacaoReducer.erroCadastro,
+        loadingCadastro: state.AutenticacaoReducer.loadingCadastro,
     }
 )
 
 export default connect(mapStateToProps, { cadastraUsuario, modificaEmail, modificaSenha, modificaNome })(cadastro);
+
