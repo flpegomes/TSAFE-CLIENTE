@@ -12,13 +12,20 @@ import {
         LOGIN_USUARIO_SUCESSO,
         LOADING_LOGIN,
         LOADING_CADASTRO,
-        MODAL_VISIBLE,
-        MODAL_INVISIBLE
+        MODIFICA_SOBRENOME,
+
 } from './Types';
 
 export const modificaEmail = (texto) => {
     return {
         type: MODIFICA_EMAIL,
+        payload: texto
+    }
+}
+
+export const modificaSobrenome = (texto) => {
+    return {
+        type: MODIFICA_SOBRENOME,
         payload: texto
     }
 }
@@ -37,19 +44,8 @@ export const modificaNome = (texto) => {
     }
 }
 
-export const mostrarModal = () => {
-    return {
-        type: MODAL_VISIBLE,
-    }
-}
 
-export const esconderModal = () => {
-    return {
-        type: MODAL_INVISIBLE,
-    }
-}
-
-export const cadastraUsuario = ({nome, email, senha}) => {
+export const cadastraUsuario = ({nome, sobrenome, email, senha}) => {
     return dispatch => {
 
         dispatch({ type: LOADING_CADASTRO });
@@ -58,7 +54,7 @@ export const cadastraUsuario = ({nome, email, senha}) => {
         .then(user => {
             let emailB64 = b64.encode(email);
             firebase.database().ref(`/contatos/${emailB64}`)
-                .push({ nome })
+                .push({ nome, sobrenome })
                 .then(value => cadastroUsuarioSucesso(dispatch))
             
         })

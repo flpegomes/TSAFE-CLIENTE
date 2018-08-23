@@ -4,6 +4,7 @@ import { Router, Scene, Stack } from 'react-native-router-flux';
 import Login from'./components/Login';
 import Principal from'./components/Principal';
 import Cadastro from'./components/Cadastro';
+import Chat from './components/Chat'
 
 export default props => (
     <Router>
@@ -11,6 +12,7 @@ export default props => (
             <Scene key='Login' component={Login} hideNavBar={true} />
             <Scene key='Cadastro' component={Cadastro} title="Cadastro" />
             <Scene key='Principal' component={Principal} title="Principal" hideNavBar={true} />
+            <Scene key='Chat' component={Chat} title="Chat" hideNavBar={false} />
 
         </Stack>
     </Router>

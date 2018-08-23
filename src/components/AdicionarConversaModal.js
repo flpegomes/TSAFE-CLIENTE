@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { View, Text, Modal, TextInput, StyleSheet, TouchableOpacity, } from 'react-native'
 import { connect } from 'react-redux';
-import { mostrarModal, esconderModal } from '../Actions/AutenticacaoActions';
+import { mostrarModal, esconderModal, modificaContato, adicionaContato } from '../Actions/AppActions';
 
 class AdicionarConversaModal extends Component {
     state = {
@@ -23,10 +23,12 @@ class AdicionarConversaModal extends Component {
                             autoCapitalize='none'
                             style={styles.boxInput}
                             underlineColorAndroid='rgba(0,0,0,0)'
-                            placeholder='nome'
-                            value={this.state.newRepoText}
-                            onChangeText={newRepoText => this.setState({ newRepoText })}
+                            placeholder='email'
+                            value={this.props.adicionar_contato}
+                            onChangeText={texto => this.props.modificaContato(texto)}
                         />
+
+                        <Text style={styles.msgErro}> {this.props.adicionar_contato_erro} </Text>
 
                         <View style={styles.buttonContainer}>
                             <TouchableOpacity
@@ -38,7 +40,7 @@ class AdicionarConversaModal extends Component {
 
                             <TouchableOpacity
                                 style={[styles.button, styles.submitButton]}
-                                onPress={() => this.props.onAdd(this.state.newRepoText)}
+                                onPress={() => this.props.adicionaContato(this.props.adicionar_contato)}
                             >
                                 <Text style={styles.buttonText}> Adicionar</Text>
                             </TouchableOpacity>
@@ -101,14 +103,20 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         color: '#fff', 
         fontSize: 12,
+    },
+    msgErro: {
+        color: '#ff0000',
+        fontSize: 14,
     }
 })
 
 
 const mapStateToProps = state => (
     {
-        modalVisible: state.AutenticacaoReducer.modalVisible,
+        modalVisible: state.AppReducer.modalVisible,
+        adicionar_contato: state.AppReducer.adicionar_contato,
+        adicionar_contato_erro: state.AppReducer.adicionar_contato_erro
     }
   )
   
-  export default connect(mapStateToProps, { mostrarModal, esconderModal })(AdicionarConversaModal);
+  export default connect(mapStateToProps, { mostrarModal, esconderModal, modificaContato, adicionaContato })(AdicionarConversaModal);

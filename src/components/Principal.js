@@ -1,12 +1,12 @@
 import Home from './Mapa.js';
 import Perfil from './Perfil';
 import Pagamento from './Pagamento';
-import Conversas from './Conversas';
 
 
 import React, { Fragment } from 'react';
 import { Container, Header, Left, Right, Body, Title, Button, Icon, View, Fab, List, ListItem, Thumbnail, Text, Badge, Content, Tab, Tabs, TabHeading, Card, CardItem } from 'native-base';
 import { Image, StyleSheet } from 'react-native';
+import PrincipalConversas from './PrincipalConversas.js';
 
 
   
@@ -32,7 +32,7 @@ const App = () => (
         <Pagamento />
       </Tab>
       <Tab heading={<TabHeading style={styles.tabHeading} ><Icon style={styles.icon} type="Octicons" name="credit-card" /></TabHeading>}>
-        <Conversas />
+        <PrincipalConversas />
       </Tab>
     </Tabs>
     </View>

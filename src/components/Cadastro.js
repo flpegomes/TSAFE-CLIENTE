@@ -2,14 +2,14 @@ import React, { Component } from 'react';
 import { View, TextInput, Button, StyleSheet, TouchableOpacity, Text, ActivityIndicator} from 'react-native';
 import { connect } from 'react-redux';
 import { Toast } from 'native-base';
-import { modificaEmail, modificaSenha, modificaNome, cadastraUsuario } from '../Actions/AutenticacaoActions';
+import { modificaEmail, modificaSenha, modificaNome, cadastraUsuario, modificaSobrenome } from '../Actions/AutenticacaoActions';
 
 class cadastro extends Component {
 
     _cadastraUsuario() {
 
-        const { nome, email, senha} = this.props;
-        this.props.cadastraUsuario({nome, email, senha});
+        const { nome,sobrenome, email, senha} = this.props;
+        this.props.cadastraUsuario({nome, sobrenome, email, senha});
     }
 
     renderBtnCadastrar() {
@@ -35,6 +35,14 @@ class cadastro extends Component {
                     placeholder="nome" 
                     value={this.props.nome}
                     onChangeText={texto => (this.props.modificaNome(texto))}
+                    style={styles.input}
+                    underlineColorAndroid='transparent'    
+                    placeholderTextColor='#999'
+                />
+                <TextInput 
+                    placeholder="sobrenome" 
+                    value={this.props.sobrenome}
+                    onChangeText={texto => (this.props.modificaSobrenome(texto))}
                     style={styles.input}
                     underlineColorAndroid='transparent'    
                     placeholderTextColor='#999'
@@ -114,6 +122,7 @@ const styles = StyleSheet.create({
 const mapStateToProps = state => (
     {
         nome: state.AutenticacaoReducer.nome,
+        sobrenome: state.AutenticacaoReducer.sobrenome,
         email: state.AutenticacaoReducer.email,
         senha: state.AutenticacaoReducer.senha,
         erroCadastro: state.AutenticacaoReducer.erroCadastro,
@@ -121,5 +130,5 @@ const mapStateToProps = state => (
     }
 )
 
-export default connect(mapStateToProps, { cadastraUsuario, modificaEmail, modificaSenha, modificaNome })(cadastro);
+export default connect(mapStateToProps, { modificaSobrenome, cadastraUsuario, modificaEmail, modificaSenha, modificaNome })(cadastro);
 
