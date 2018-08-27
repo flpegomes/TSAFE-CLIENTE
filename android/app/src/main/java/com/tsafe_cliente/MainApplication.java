@@ -3,6 +3,8 @@ package com.tsafe_cliente;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.arttitude360.reactnative.rngoogleplaces.RNGooglePlacesPackage;
+import com.arttitude360.reactnative.rngoogleplaces.RNGooglePlacesPackage;
 import com.airbnb.android.react.maps.MapsPackage;
 import com.mapbox.rctmgl.RCTMGLPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
@@ -26,6 +28,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new RNGooglePlacesPackage(),
             new MapsPackage(),
             new RCTMGLPackage(),
             new VectorIconsPackage()
