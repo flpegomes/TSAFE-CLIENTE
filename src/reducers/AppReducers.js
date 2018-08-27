@@ -3,6 +3,7 @@ const INITIAL_STATE = {
     adicionar_contato: '',
     adicionar_contato_erro: '',
     mensagem:'',
+    scroll: 'N',
 };
 
 import {
@@ -28,9 +29,9 @@ export default (state = INITIAL_STATE, action) => {
         case ADICIONAR_CONTATO_SUCESSO:
             return { ...state, adicionar_contato: '' } 
         case MODIFICA_MENSAGEM:
-            return { ...state, mensagem: action.payload }
+            return { ...state, mensagem: action.payload, scroll: 'N' }
         case ENVIA_MENSAGEM_SUCESSO:
-            return { ...state, mensagem: ''}
+            return { ...state, mensagem: '', scroll: 'S' }
 
         default:
             return state;

@@ -1,15 +1,20 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, TextInput, Image, TouchableHighlight, ListView } from 'react-native';
+import { View, Keyboard,Text, StyleSheet, TextInput, Image, TouchableHighlight, ListView } from 'react-native';
 import { Icon } from 'native-base';
 import { connect } from 'react-redux';
 import _ from 'lodash';
-import { modificaMensagem, enviaMensagem, conversaUsuarioFetch } from '../Actions/AppActions';
+import { modificaMensagem, enviaMensagem, conversaUsuarioFetch, atualizaScroll } from '../Actions/AppActions';
 
 class Chat extends Component {
 
+    constructor(props) {
+        super(props);
+        this.scroll = null;
+    }
     componentWillMount() {
         this.props.conversaUsuarioFetch(this.props.contatoEmail);
         this.criaFonteDeDados(this.props.conversa);
+
     }
 
     componentWillReceiveProps(nextProps) {
@@ -18,6 +23,7 @@ class Chat extends Component {
         }
         this.criaFonteDeDados(nextProps.conversa);
     }
+
 
     _enviaMensagem() {
         const { mensagem, contatoNome, contatoEmail } = this.props;
@@ -39,7 +45,6 @@ class Chat extends Component {
                 </View>
             )
         }
-
         return (
             <View style={styles.containerMsgRecebida}>
                     <Text style={styles.textoMensagemRecebida}>{texto.mensagem}
@@ -58,6 +63,10 @@ class Chat extends Component {
                             enableEmptySections
                             dataSource={this.dataSource}
                             renderRow={this.renderRow}
+                            ref={ ( ref ) => this.scrollView = ref }
+                            onContentSizeChange={ () => {        
+                                this.scrollView.scrollToEnd( { animated: true } )
+                            } }                        
                         />
                     </View>    
                     <View style={styles.containerInput}>
@@ -154,9 +163,10 @@ mapStateToProps = state => {
     });
     return ({
         mensagem: state.AppReducer.mensagem,
-        conversa: conversa
+        conversa: conversa,
+        scroll: state.AppReducer.scroll
 
     })
 }
 
-export default connect(mapStateToProps, { modificaMensagem, enviaMensagem, conversaUsuarioFetch })(Chat);
+export default connect(mapStateToProps, { modificaMensagem, enviaMensagem, conversaUsuarioFetch, atualizaScroll })(Chat);

@@ -21,7 +21,7 @@ const logo_url ='https://i.imgur.com/Y63DKEA.png';
 const App = () => (
   <Container>
     <View style={styles.container}>
-    <Tabs tabBarPosition='bottom'>
+    <Tabs locked={true} tabBarPosition='bottom'>
       <Tab heading={<TabHeading style={styles.tabHeading} ><Icon style={styles.icon} type="FontAwesome" name="home" /></TabHeading>}>
         <Home />
       </Tab>
