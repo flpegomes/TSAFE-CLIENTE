@@ -1,26 +1,43 @@
 import React, { Component } from 'react';
-import { View, Button, Text, StyleSheet, Dimensions, ScrollView  } from 'react-native';
+import { View, Button, Text, StyleSheet, Dimensions, ScrollView, ListView, TouchableHighlight } from 'react-native';
 import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
 import { connect } from 'react-redux';
-import { InputGroup, Input, Icon, List, ListItem, Left } from 'native-base';
+import { InputGroup, Input, Icon, List, ListItem, Left, Body } from 'native-base';
 
 import _ from 'lodash';
 import { Actions } from 'react-native-router-flux';
-import { getLocalizacaoUsuario, modificaOrigem, modificaDestino, resultadoSearchBox, getEnderecoPredict } from '../Actions/MapsActions';
+import { 
+        getLocalizacaoUsuario, 
+        modificaOrigem, 
+        modificaDestino, 
+        resultadoSearchBox, 
+        getEnderecoPredict, 
+        getEnderecoSelecionado,
+        calculaDistancia } from '../Actions/MapsActions';
 
 
 
 const { height, width } = Dimensions.get('window');
 const ASPECT_RATIO = width / height;
-const latitudeDelta= 0.0422;
+const latitudeDelta= 0.0222;
 const longitudeDelta = ASPECT_RATIO * latitudeDelta;
 
  class Mapa extends Component {
 
-  componentDidMount() {
 
-    this.props.getEnderecoPredict();
+  componentWillReceiveProps(nextProps) {
+    this.criaFonteDeDados(nextProps.enderecos);      
+    if(!(this.props.origem === nextProps.origem)){
+      this.props.getEnderecoPredict(nextProps.origem);   
+    }
+    if(!(this.props.destino === nextProps.destino)){
+      this.props.getEnderecoPredict(nextProps.destino);   
+    }
+   
   }
+
+
+
   state = {
     places: [
       {
@@ -53,6 +70,26 @@ const longitudeDelta = ASPECT_RATIO * latitudeDelta;
     ]
   }
 
+  componentWillMount(){
+    this.props.getLocalizacaoUsuario();
+    this.criaFonteDeDados(this.props.enderecos);
+  }
+  criaFonteDeDados(enderecos) {
+    const ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 })
+    this.fonteDeDados = ds.cloneWithRows(enderecos);
+  }
+
+  _enderecoSelecionado(placeID, resultadoOrigem, origem, destino) {
+    this.props.getEnderecoSelecionado(placeID, 
+                                      resultadoOrigem, 
+                                      origem,
+                                      destino
+                                    );        
+  }
+
+  _calcularDistancia(origem, destino) {
+    this.props.calculaDistancia(origem, destino);
+  }
 
   _renderMarker(place, i) {
     if (this.state.places[i].tipo === 'v' ) {
@@ -69,8 +106,6 @@ const longitudeDelta = ASPECT_RATIO * latitudeDelta;
             state.places[i].latitude = e.nativeEvent.coordinate.latitude;
             state.places[i].longitude = e.nativeEvent.coordinate.longitude;
             this.setState(state);
-            console.log(place);
-            console.log(this.state.places)
           }
         }
       coordinate={{
@@ -83,26 +118,23 @@ const longitudeDelta = ASPECT_RATIO * latitudeDelta;
 
     else {
       return (
-      <MapView.Marker
-      ref={ mark => place.mark = mark }
-      title={place.title}
-      description={place.description}
-      key={ place.id }
-      draggable
-      onDragEnd={(e) => {
-            const state = this.state;
-            state.places[i].latitude = e.nativeEvent.coordinate.latitude;
-            state.places[i].longitude = e.nativeEvent.coordinate.longitude;
-            this.setState(state);
-            console.log(place);
-            console.log(this.state.places)
-          }
-        }
-      coordinate={{
-        latitude: place.latitude,
-        longitude: place.longitude,
-      }}
-  />
+        <MapView.Marker
+          ref={ mark => place.mark = mark }
+          title={place.title}
+          description={place.description}
+          key={ place.id }
+          draggable
+          onDragEnd={(e) => {
+                const state = this.state;
+                state.places[i].latitude = e.nativeEvent.coordinate.latitude;
+                state.places[i].longitude = e.nativeEvent.coordinate.longitude;
+                this.setState(state);
+          }}
+          coordinate={{
+            latitude: place.latitude,
+            longitude: place.longitude,
+          }}
+         />
     )
     }
   }
@@ -112,33 +144,40 @@ const longitudeDelta = ASPECT_RATIO * latitudeDelta;
   }
 
   _renderListaEnderecos() {
-
-    console.log('render');
-    console.log(`${this.props.resultadoOrigem} aaaa ${this.props.resultadoDestino}`)
-    console.log(this.props.enderecos)
-    if( this.props.resultadoDestino == true || this.props.resultadoOrigem == true ){
+    if(this.props.resultadoDestino === true || this.props.resultadoOrigem === true){
       return (
         <View style={styles.searchResultsWrapper}>
-        <List>
-            <ListItem button avatar>
-                <Left>
-                    <Icon style={styles.leftIcon} name='location' type="EvilIcons" /> 
-                </Left>
-                <Text>1</Text>
-            </ListItem>
-            <ListItem>
-                <Text>1</Text>
-            </ListItem>
-        </List>
-    </View>
-      )
-    }else{
-      return null;
+          <ListView
+              enableEmptySections
+              dataSource={this.fonteDeDados}
+              renderRow={(data) => {
+                return (
+                  <View>
+                    <ListItem button avatar 
+                      onPress={() => this._enderecoSelecionado(data.placeID, 
+                                                               this.props.resultadoOrigem,
+                                                               this.props.origemEnderecoSelecionado,
+                                                               this.props.destinoEnderecoSelecionado
+                                                            )}
+                    >
+                      <Left>
+                          <Icon style={styles.leftIcon} name='location' type="EvilIcons" /> 
+                      </Left>
+                      <Body>
+                        <Text style={styles.primaryText}>{data.primaryText}</Text>
+                        <Text style={styles.secundaryText}>{data.secondaryText}</Text>
+                      </Body>
+                    </ListItem>
+                  </View>
+                )  
+              }}                
+          />
+        </View>
+      );
     }
- 
+    return (<View></View>);
   }
    render() {
-    const { latitude, longitude, mark } = this.state.places[0];
 
     return(
       
@@ -162,7 +201,7 @@ const longitudeDelta = ASPECT_RATIO * latitudeDelta;
             this._renderMarker(place, i)
           ))}
         </MapView>
-        <ScrollView 
+        {/* <ScrollView 
           style={styles.placesContainer}
           horizontal
           showsHorizontalScrollIndicator={false}
@@ -192,7 +231,7 @@ const longitudeDelta = ASPECT_RATIO * latitudeDelta;
                   <Text>{place.latitude}</Text>
                 </View>
             ))}            
-        </ScrollView>
+        </ScrollView> */}
             
         <View style={styles.searchBox}>
                 <View style={styles.inputWrapper}>
@@ -212,17 +251,30 @@ const longitudeDelta = ASPECT_RATIO * latitudeDelta;
                     <InputGroup>
                         <Icon name="search" size={15} color="#FF5E3A" />
                         <Input style={styles.inputSearch} 
-                            placeholder="Onde fica seu destino? "
+                            placeholder="Para onde deseja ir?"
                             onChangeText={texto => (this.props.modificaDestino(texto))}
-                            value={this.props.destino}
                             onFocus={() => this.props.resultadoSearchBox('destino')}
+                            value={this.props.destino}
                             /> 
                          
                     </InputGroup>
                 </View>
             </View>
-            {this._renderListaEnderecos()}
+
+
+
+            <TouchableHighlight 
+              onPress={() => {
+                        this._calcularDistancia(this.props.origemEnderecoSelecionado, this.props.destinoEnderecoSelecionado)
+                        console.log(this.props)
+                      }}
+              style={styles.btnConfirmar}
+            >
+                <Text style={styles.txtConfirmar} >CONFIRMAR SOLICITAÇÃO</Text>
+            </TouchableHighlight>
                      
+            { this._renderListaEnderecos() }
+
             
       </View>
 
@@ -243,7 +295,7 @@ const styles = StyleSheet.create({
     container: {
       flex:1, 
       justifyContent: 'flex-end',
-      alignItems: 'flex-end',
+      alignItems: 'center',
     },
     placesContainer: {
         width: '100%',
@@ -288,12 +340,14 @@ const styles = StyleSheet.create({
         marginBottom: 0
     },
     searchResultsWrapper: {
-      top: 160,
+      bottom: 0,
       position: 'absolute',
-      width: '100%',
-      height:1000,
+      width: width,
+      marginLeft:20,
       backgroundColor: '#fff',
-      opacity: 0.9
+      opacity: 0.9,
+      borderRadius: 7,
+      elevation: 5
     },
     primaryText: {
         fontWeight: 'bold',
@@ -309,25 +363,56 @@ const styles = StyleSheet.create({
         borderLeftColor: '#7D7D7D',
     },
     leftIcon: {
-        fontSize: 28,
+        
         color: '#7D7D7D',
     },
     distance: {
         fontSize: 12
+    },
+    btnConfirmar: {
+        backgroundColor: '#f9dc36',
+        width: 200,
+        height: 35,
+        borderRadius: 3,
+        justifyContent: 'center',
+        alignItems: 'center',
+        opacity:0.9,
+        elevation: 4,
+        marginBottom:20,
+
+    },
+    txtConfirmar: {
+      color:'#323232',
+      fontWeight: 'bold',
+      fontSize: 14
     }
+
     
 }); 
 
 
 const mapStateToProps = state => (
   {
+    
+      origemEnderecoSelecionado: state.MapsReducer.origemEnderecoSelecionado,
+      destinoEnderecoSelecionado: state.MapsReducer.destinoEnderecoSelecionado,
       region_latitude: state.MapsReducer.region_latitude,
       region_longitude: state.MapsReducer.region_longitude,
       origem: state.MapsReducer.origem,
       destino: state.MapsReducer.destino,
       resultadoOrigem: state.MapsReducer.resultadoOrigem,
       resultadoDestino: state.MapsReducer.resultadoDestino,
-      enderecos: state.MapsReducer.enderecos 
+      distanciaMoradorCasa: state.MapsReducer.distanciaMoradorCasa,
+      enderecos: _.map(state.MapsReducer.enderecos, (val, uid) => {
+        return { ...val, uid}
+      })   
   }
 )
-export default connect(mapStateToProps, { getLocalizacaoUsuario, modificaDestino, modificaOrigem, resultadoSearchBox, getEnderecoPredict })(Mapa);
+export default connect(mapStateToProps, { 
+                                          getLocalizacaoUsuario, 
+                                          modificaDestino, 
+                                          modificaOrigem, 
+                                          resultadoSearchBox, 
+                                          getEnderecoPredict, 
+                                          getEnderecoSelecionado,
+                                          calculaDistancia })(Mapa);

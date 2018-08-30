@@ -3,17 +3,24 @@ import {
         MODIFICA_DESTINO, 
         MODIFICA_ORIGEM, 
         TOGGLE_SEARCH_RESULT,
-        GET_ENDERECO_PREDICT
+        GET_ENDERECO_PREDICT,
+        GET_ENDERECO_SELECIONADO_ORIGEM,
+        GET_ENDERECO_SELECIONADO_DESTINO,
+        GET_DISTANCIA_MATRIX,
+
     } from './Types';
 import { Actions } from 'react-native-router-flux';
 import RNGooglePlaces from 'react-native-google-places';
+import request from '../util/Request';
+import firebase from 'firebase';
+import b64 from 'base-64';
+
 
 
 export const getLocalizacaoUsuario = () => {
     return(dispatch) => {
         navigator.geolocation.getCurrentPosition(
             (position) => {
-                console.log(position.coords);
                 dispatch({
                     type: GET_LOCALIZACAO_USUARIO,
                     payload: position.coords
@@ -46,11 +53,10 @@ export const resultadoSearchBox = (texto) => {
     }
 }
 
-export const getEnderecoPredict = () => {
-    return(dispatch, store) => {
-        let userInput = store().resultadoOrigem ? store().origem : store().destino;
-
-        RNGooglePlaces.getAutocompletePredictions('05302-041',
+export const getEnderecoPredict = (texto) => {
+    return(dispatch) => {
+        let userInput = texto;
+        RNGooglePlaces.getAutocompletePredictions(userInput,
             {
                 country:'BR'
             }
@@ -60,10 +66,63 @@ export const getEnderecoPredict = () => {
                 type: GET_ENDERECO_PREDICT,
                 payload: results               
             })
-
-            console.log(results)
-            }
-        )
+        })
         .catch((error) => console.log(error.message));
     }
 }
+
+export const getEnderecoSelecionado = (endereco, resultadoOrigem) => {
+    return(dispatch) => {
+        RNGooglePlaces.lookUpPlaceByID(endereco)
+        .then((results) => {
+            if(resultadoOrigem)
+            {
+                dispatch({
+                    type: GET_ENDERECO_SELECIONADO_ORIGEM,
+                    payload: results
+                })
+            }
+            else if(!resultadoOrigem){
+                dispatch({
+                    type: GET_ENDERECO_SELECIONADO_DESTINO,
+                    payload: results
+                 })
+            }
+        })
+    }
+}
+
+export const calculaDistancia = (origem, destino) =>  {
+    return dispatch => {
+            request.get("https://maps.googleapis.com/maps/api/distancematrix/json")
+                .query({
+                    origins: origem.latitude + "," + origem.longitude,
+                    destinations: destino.latitude + "," + destino.longitude,
+                    mode:"driving",
+                    key:"AIzaSyCCvLwYKMDVy2u6CqJl9zAdGOYpsvuVngM",
+                })
+                .finish((error, res) => {
+                    dispatch({
+                        type: GET_DISTANCIA_MATRIX,
+                        payload: res.body
+                    })
+               })
+    }
+}
+
+// export const confirmarPedido = () => {
+//     return dispatch => {
+//         const { currentUser } = firebase.auth();
+//         let emailUsuarioB64 = b64.encode(currentUser.email);
+//         firebase.database().ref(`/usuario_pedidos/${emailUsuarioB64}`)
+//             .push({
+//                     chegada_endereco: origem.name
+//                     chegada_latitude: origem.latitude,
+//                     chegada_longitude: origem.longitude,
+                    
+                    
+
+//             })
+
+//     }
+// }

@@ -1,31 +1,38 @@
-export const MODIFICA_EMAIL = 'modifica_email';
-export const MODIFICA_SENHA = 'modifica_senha';
-export const MODIFICA_NOME = 'modifica_nome';
-export const MODIFICA_SOBRENOME = 'modifica_sobrenome';
+export const MODIFICA_EMAIL = 'MODIFICA_EMAIL';
+export const MODIFICA_SENHA = 'MODIFICA_SENHA';
+export const MODIFICA_NOME = 'MODIFICA_NOME';
+export const MODIFICA_SOBRENOME = 'MODIFICA_SOBRENOME';
+export const MODIFICA_ENDERECO = 'MODIFICA_ENDERECO';
+export const MOSTRA_LISTA_ENDERECO = 'MOSTRA_LISTA_ENDERECO';
+export const POPULA_ENDERECO_CADASTRO = 'POPULA_ENDERECO_CADASTRO';
+export const SELECIONA_ENDERECO_LISTA_CADASTRO = 'SELECIONA_ENDERECO_LISTA_CADASTRO';
 
 
 
-export const CADASTRO_USUARIO_SUCESSO = 'cadastro_usuario_sucesso';
-export const CADASTRO_USUARIO_ERRO = 'cadastro_usuario_erro';
-export const LOGIN_USUARIO_SUCESSO = 'login_usuario_sucesso';
-export const LOGIN_USUARIO_ERRO = 'login_usuario_erro';
-export const LOADING_LOGIN = 'loading_login';
-export const LOADING_CADASTRO = 'loading_cadastro';
-export const MODAL_VISIBLE = 'modal_visible';
-export const MODAL_INVISIBLE = 'modal_invisible';
+export const CADASTRO_USUARIO_SUCESSO = 'CADASTRO_USUARIO_SUCESSO';
+export const CADASTRO_USUARIO_ERRO = 'CADASTRO_USUARIO_ERRO';
+export const LOGIN_USUARIO_SUCESSO = 'LOGIN_USUARIO_SUCESSO';
+export const LOGIN_USUARIO_ERRO = 'LOGIN_USUARIO_ERRO';
+export const LOADING_LOGIN = 'LOADING_LOGIN';
+export const LOADING_CADASTRO = 'LOADING_CADASTRO';
+export const MODAL_VISIBLE = 'MODAL_VISIBLE';
+export const MODAL_INVISIBLE = 'MODAL_INVISIBLE';
 
 
-export const MODIFICA_CONTATO = 'modifica_contato';
-export const ADICIONA_CONTATO = 'adiciona_contato';
-export const ADICIONAR_CONTATO_ERRO = 'adicionar_contato_erro';
-export const ADICIONAR_CONTATO_SUCESSO = 'adicionar_contato_sucesso';
-export const LISTA_USUARIO_CONTATO = 'lista_usuario_contato';
-export const MODIFICA_MENSAGEM = 'modifica_mensagem';
-export const LISTA_CONVERSA_USUARIO = 'lista_conversa_usuario';
-export const ENVIA_MENSAGEM_SUCESSO = 'envia_mensagem_sucesso';
-export const LISTA_CONVERSAS_USUARIO = 'lista_conversas_usuario';
-export const GET_LOCALIZACAO_USUARIO = 'get_localizacao_usuario';
-export const MODIFICA_ORIGEM = 'modifica_origem';
-export const MODIFICA_DESTINO = 'modifica_destino';
-export const TOGGLE_SEARCH_RESULT = 'toggle_search_result';
-export const GET_ENDERECO_PREDICT = 'get_endereco_predict';
+export const MODIFICA_CONTATO = 'MODIFICA_CONTATO';
+export const ADICIONA_CONTATO = 'ADICIONA_CONTATO';
+export const ADICIONAR_CONTATO_ERRO = 'ADICIONAR_CONTATO_ERRO';
+export const ADICIONAR_CONTATO_SUCESSO = 'ADICIONAR_CONTATO_SUCESSO';
+export const LISTA_USUARIO_CONTATO = 'LISTA_USUARIO_CONTATO';
+export const MODIFICA_MENSAGEM = 'MODIFICA_MENSAGEM';
+export const LISTA_CONVERSA_USUARIO = 'LISTA_CONVERSA_USUARIO';
+export const ENVIA_MENSAGEM_SUCESSO = 'ENVIA_MENSAGEM_SUCESSO';
+export const LISTA_CONVERSAS_USUARIO = 'LISTA_CONVERSAS_USUARIO';
+export const GET_LOCALIZACAO_USUARIO = 'GET_LOCALIZACAO_USUARIO';
+export const MODIFICA_ORIGEM = 'MODIFICA_ORIGEM';
+export const MODIFICA_DESTINO = 'MODIFICA_DESTINO';
+export const TOGGLE_SEARCH_RESULT = 'TOGGLE_SEARCH_RESULT';
+export const GET_ENDERECO_PREDICT = 'GET_ENDERECO_PREDICT';
+export const GET_ENDERECO_SELECIONADO_ORIGEM = 'GET_ENDERECO_SELECIONADO_ORIGEM';
+export const GET_ENDERECO_SELECIONADO_DESTINO = 'GET_ENDERECO_SELECIONADO_DESTINO';
+export const GET_DISTANCIA_MATRIX = 'GET_DISTANCIA_MATRIX';

@@ -40,7 +40,7 @@ export const adicionaContato = email => {
 
     return dispatch => {
         let emailb64 = b64.encode(email);
-        firebase.database().ref(`/contatos/${emailb64}`)
+        firebase.database().ref(`/usuarios/${emailb64}`)
         .once('value')
         .then(snapshot => {
             if(snapshot.val()) {
@@ -121,7 +121,7 @@ export const enviaMensagem = (mensagem, contatoNome, contatoEmail ) => {
                     .set({ nome: contatoNome , email: contatoEmail })
             })
             .then(() => {
-                firebase.database().ref(`/contatos/${usuarioEmailB64}`)
+                firebase.database().ref(`/usuarios/${usuarioEmailB64}`)
                     .once("value")
                     .then(snapshot => {
 

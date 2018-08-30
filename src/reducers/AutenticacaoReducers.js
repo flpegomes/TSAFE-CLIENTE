@@ -1,12 +1,23 @@
 const INITIAL_STATE = {
-    nome: '',
-    sobrenome: 'teste',
-    email: 'G@g.com.br', 
+    nome: 'Felipe',
+    sobrenome: 'Gomes',
+    email: 'felipe@tsafe.com.br', 
     senha: '123456', 
     erroCadastro:'',
     erroLogin: '',
     loadingLogin: false,
     loadingCadastro: false,
+    endereco: '',
+    mostraListaEndereco: false,
+    listaEnderecos: 
+    [
+        {
+            primaryText: "Nenhum dado encontrado",
+            secondaryText: "Você digitou o endereço certo?"
+        }    
+    ],
+    enderecoSelecionado: null
+
 
 }
 
@@ -21,9 +32,15 @@ import {
     LOGIN_USUARIO_SUCESSO, 
     LOADING_LOGIN,
     LOADING_CADASTRO,
+    MODIFICA_ENDERECO,
+    POPULA_ENDERECO_CADASTRO,
+    SELECIONA_ENDERECO_LISTA_CADASTRO,
+    MOSTRA_LISTA_ENDERECO,
+
 } from '../Actions/Types';
 
 export default (state = INITIAL_STATE, action) => {
+    console.log(action.type)
     switch(action.type) {
         case MODIFICA_EMAIL:
             return { ...state, email:action.payload  }
@@ -43,6 +60,16 @@ export default (state = INITIAL_STATE, action) => {
             return { ...state, loadingLogin: true }
         case LOADING_CADASTRO: 
             return { ...state, loadingCadastro: true }
+        case MODIFICA_ENDERECO:
+            return { ...state, endereco: action.payload }
+        case MOSTRA_LISTA_ENDERECO:
+            if(action.payload === 'casa') {
+                return { ...state, mostraListaEndereco: true } 
+            }
+        case POPULA_ENDERECO_CADASTRO: 
+            return { ...state, listaEnderecos: action.payload }
+        case SELECIONA_ENDERECO_LISTA_CADASTRO:
+            return { ...state, enderecoSelecionado: action.payload, mostraListaEndereco:false, endereco: action.payload.name }
         default:
             return state;   
     }
