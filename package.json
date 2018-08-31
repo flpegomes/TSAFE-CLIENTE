@@ -16,6 +16,7 @@
     "react-native": "0.55.4",
     "react-native-google-places": "^2.5.2",
     "react-native-maps": "^0.16.0",
+    "react-native-maps-directions": "^1.6.0",
     "react-native-router-flux": "^4.0.1",
     "react-native-vector-icons": "^5.0.0",
     "react-navigation": "^2.11.2",

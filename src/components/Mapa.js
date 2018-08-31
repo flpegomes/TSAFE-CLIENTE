@@ -3,7 +3,7 @@ import { View, Button, Text, StyleSheet, Dimensions, ScrollView, ListView, Touch
 import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
 import { connect } from 'react-redux';
 import { InputGroup, Input, Icon, List, ListItem, Left, Body } from 'native-base';
-
+import MapViewDirections from 'react-native-maps-directions';
 import _ from 'lodash';
 import { Actions } from 'react-native-router-flux';
 import { 
@@ -22,6 +22,7 @@ const { height, width } = Dimensions.get('window');
 const ASPECT_RATIO = width / height;
 const latitudeDelta= 0.0222;
 const longitudeDelta = ASPECT_RATIO * latitudeDelta;
+
 
  class Mapa extends Component {
 
@@ -78,7 +79,7 @@ const longitudeDelta = ASPECT_RATIO * latitudeDelta;
     this.props.getLocalizacaoCasa();
     this.criaFonteDeDados(this.props.enderecos);
 
-    
+   
 
   }
 
@@ -161,7 +162,7 @@ const longitudeDelta = ASPECT_RATIO * latitudeDelta;
                 this.setState(state);
           }}
           coordinate={{
-            latitude: place.latitude,
+            latitude:   place.latitude,
             longitude: place.longitude,
           }}
          />
@@ -209,6 +210,16 @@ const longitudeDelta = ASPECT_RATIO * latitudeDelta;
   }
    render() {
 
+
+    const d = {
+      latitude: this.props.latitudeCasa,
+      longitude: this.props.longitudeCasa,
+    }
+    const o = {
+      latitude: -23.53477056,
+      longitude: -46.72748665,
+    }
+
     return(
       
       <View style={styles.container}>
@@ -223,7 +234,11 @@ const longitudeDelta = ASPECT_RATIO * latitudeDelta;
           }}
           onMapReady={this._mapReady}
           showsUserLocation={true}
-				showsMyLocationButton={true}
+          showsMyLocationButton={true}
+          showsPointsOfInterest={false}
+          rotateEnable={false}
+          showsBuildings={false}
+          zoomControlEnabled
 
           style={styles.mapView}
         >
@@ -232,7 +247,15 @@ const longitudeDelta = ASPECT_RATIO * latitudeDelta;
           ))}
 
           {this._renderCasa() }
-           
+          
+
+          <MapViewDirections
+            origin={o}
+            destination={d}
+            apikey='AIzaSyCCvLwYKMDVy2u6CqJl9zAdGOYpsvuVngM'
+            strokeWidth={3}
+            strokeColor='#f9dc36'
+            />
         </MapView>
         {/* <ScrollView 
           style={styles.placesContainer}
@@ -268,28 +291,16 @@ const longitudeDelta = ASPECT_RATIO * latitudeDelta;
             
         <View style={styles.searchBox}>
                 <View style={styles.inputWrapper}>
-                    <Text style={styles.label}> Origem </Text>
+                    <Text style={styles.label}>Localização de chegada:</Text>
                     <InputGroup>
-                        <Icon name="search" size={15} color="#FF5E3A" />
+                        <Icon name="search" size={15} style={styles.iconSearch} type='FontAwesome' />
                         <Input style={styles.inputSearch} 
+                            placeholderTextColor='#999'
                             placeholder="A onde você irá chegar?"
                             onChangeText={texto => (this.props.modificaOrigem(texto))}
                             onFocus={() => this.props.resultadoSearchBox('origem')}
                             value={this.props.origem}
                             /> 
-                    </InputGroup>
-                </View>
-                <View style={styles.secondInputWrapper}>
-                    <Text style={styles.label}> Destino </Text>
-                    <InputGroup>
-                        <Icon name="search" size={15} color="#FF5E3A" />
-                        <Input style={styles.inputSearch} 
-                            placeholder="Para onde deseja ir?"
-                            onChangeText={texto => (this.props.modificaDestino(texto))}
-                            onFocus={() => this.props.resultadoSearchBox('destino')}
-                            value={this.props.destino}
-                            /> 
-                         
                     </InputGroup>
                 </View>
             </View>
@@ -350,7 +361,7 @@ const styles = StyleSheet.create({
         marginRight: 10,
         marginTop: 10,
         marginBottom: 0,
-        backgroundColor: '#fff',
+        backgroundColor: '#222',
         opacity: 0.9,
         borderRadius: 7,
     },
@@ -364,13 +375,15 @@ const styles = StyleSheet.create({
     },
     inputSearch: {
         fontSize: 14,
+        color:'#fff'
     },
     label: { 
         fontSize: 10,
-        fontStyle: 'italic',
         marginLeft: 10,
         marginTop: 10,
-        marginBottom: 0
+        marginBottom: 0,
+        color: '#f9dc36',
+        fontWeight: 'bold',
     },
     searchResultsWrapper: {
       bottom: 0,
@@ -397,7 +410,7 @@ const styles = StyleSheet.create({
     },
     leftIcon: {
         
-        color: '#7D7D7D',
+        color: '#f9dc36',
     },
     distance: {
         fontSize: 12
@@ -418,6 +431,9 @@ const styles = StyleSheet.create({
       color:'#323232',
       fontWeight: 'bold',
       fontSize: 14
+    },
+    iconSearch: {
+      color: '#f9dc36',
     }
 
     
