@@ -1,39 +1,72 @@
-import React from 'react';
-import { View, Text, Button, TextInput, StyleSheet, Image, TouchableHighlight, TouchableOpacity } from 'react-native';
+import React, { Component } from 'react';
+import { View, Text, Button, TextInput, StyleSheet, Image, TouchableHighlight, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { Actions } from 'react-native-router-flux';
+import { connect } from 'react-redux';
+import { modificaEmail, modificaSenha, autenticarUsuario } from '../Actions/AutenticacaoActions';
 
-export default props => (
-    <View style={styles.container}> 
-        <View style={styles.titleContainer}>
-            <Image 
-                source={require('../Images/teste2.png')}
-                style={{width: 335, height: 136, marginRight: 30}}
-            />
-        </View>
-        <View style={styles.formContainer}>
-            <TextInput style={styles.input} 
-                placeholder="email" 
-                underlineColorAndroid='transparent'    
-                placeholderTextColor='#999'
-            />
-            <TextInput style={styles.input} 
-                placeholder="senha" 
-                underlineColorAndroid='transparent'
-                placeholderTextColor='#999'
-                secureTextEntry={true}
+class Login extends Component {
+    _autenticarUsuario() {
+        const { email, senha } = this.props;
+        this.props.autenticarUsuario({email, senha});
+    }
 
-            />
-            <TouchableHighlight onPress={() => Actions.Cadastro()}>
-                <Text style={styles.msgCadastro}>Ainda não tem cadastro? Cadastre-se</Text>
-            </TouchableHighlight>
-        </View>        
-        <TouchableOpacity style={styles.buttonContainer}>
-            <Text style={styles.textButton}> ENTRAR </Text>
-        </TouchableOpacity>
+    renderBtnAcessar() {
+        if(this.props.loadingLogin) {
+            return (
+                <ActivityIndicator size='large'/>
+            )
+        }
+        return (
+            <TouchableOpacity 
+                    style={styles.buttonContainer}
+                    onPress={() => this._autenticarUsuario()}
+                    >
+                    <Text style={styles.textButton}> ENTRAR </Text>
+            </TouchableOpacity>
+        )
+    }
+    render() {
+        return (
+            <View style={styles.container}> 
+                <View style={styles.titleContainer}>
+                    <Image 
+                        source={require('../Images/teste2.png')}
+                        style={{width: 335, height: 136, marginRight: 30}}
+                    />
+                </View>
+                <View style={styles.formContainer}>
+                    <TextInput style={styles.input} 
+                        placeholder="email" 
+                        underlineColorAndroid='transparent'    
+                        placeholderTextColor='#999'
+                        value={this.props.email}
+                        onChangeText={texto => this.props.modificaEmail(texto)}
+                    />
+                    <TextInput style={styles.input} 
+                        placeholder="senha" 
+                        underlineColorAndroid='transparent'
+                        placeholderTextColor='#999'
+                        secureTextEntry={true}
+                        value={this.props.senha}
+                        onChangeText={texto => this.props.modificaSenha(texto)}
 
-    </View>
 
-);
+                    />
+                        <View style={styles.msgErroContainer}> 
+                            <Text style={styles.msgErro}>{this.props.erroLogin} </Text> 
+                        </View> 
+                        <TouchableHighlight onPress={() => Actions.Cadastro()}>
+                            <Text style={styles.msgCadastro}>Ainda não tem cadastro? Cadastre-se</Text>
+                        </TouchableHighlight>
+                        
+                </View>        
+                {this.renderBtnAcessar()}
+            </View>
+
+        );
+    }
+}
+
 
 const styles = StyleSheet.create({
     container: {
@@ -56,7 +89,7 @@ const styles = StyleSheet.create({
     },
     buttonContainer: {
         backgroundColor: '#f9dc36',
-        borderRadius: 10,
+        borderRadius: 3,
         justifyContent: 'center',
         alignItems: 'center' ,
         height: 45
@@ -71,7 +104,7 @@ const styles = StyleSheet.create({
         height: 45,
         backgroundColor: '#444',
         marginTop: 10,
-        borderRadius: 5,
+        borderRadius: 3,
         paddingHorizontal: 15,
         color:'#fff'
           
@@ -81,5 +114,26 @@ const styles = StyleSheet.create({
         paddingHorizontal: 10,
         paddingVertical: 20,
         color: '#f9dc36',
+        
+    },
+    msgErro: {
+        color: '#ff0000',
+        fontSize: 12,
+    },
+    msgErroContainer: {
+        marginTop: 10,
+        borderRadius: 3,
+       // backgroundColor: '#222'
+       alignItems:'flex-end'
     }
 });
+
+const mapStateToProps = state => (
+    {
+        email: state.AutenticacaoReducer.email,
+        senha: state.AutenticacaoReducer.senha,
+        erroLogin: state.AutenticacaoReducer.erroLogin,
+        loadingLogin: state.AutenticacaoReducer.loadingLogin,
+    }
+)
+export default connect(mapStateToProps, { modificaEmail, modificaSenha, autenticarUsuario })(Login);

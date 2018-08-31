@@ -1,106 +1,454 @@
 import React, { Component } from 'react';
-import { View, Button, Text, StyleSheet, Dimensions  } from 'react-native';
+import { View, Button, Text, StyleSheet, Dimensions, ScrollView, ListView, TouchableHighlight } from 'react-native';
 import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
+import { connect } from 'react-redux';
+import { InputGroup, Input, Icon, List, ListItem, Left, Body } from 'native-base';
 
-let { width, height } = Dimensions.get('window');
+import _ from 'lodash';
+import { Actions } from 'react-native-router-flux';
+import { 
+        getLocalizacaoUsuario, 
+        modificaOrigem, 
+        modificaDestino, 
+        resultadoSearchBox, 
+        getEnderecoPredict, 
+        getEnderecoSelecionado,
+        calculaDistancia,
+        getLocalizacaoCasa } from '../Actions/MapsActions';
+
+
+
+const { height, width } = Dimensions.get('window');
 const ASPECT_RATIO = width / height;
-const LATITUDE = 0;
-const LONGITUDE = 0;
-const LATITUDE_DELTA = 0.0322;
-const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
+const latitudeDelta= 0.0222;
+const longitudeDelta = ASPECT_RATIO * latitudeDelta;
 
-export default class Mapa extends Component {
-  constructor(props) {
-    super(props);
-     this.state = {
-      region: {
-        latitude: LATITUDE,
-        longitude: LONGITUDE,
-        latitudeDelta: LATITUDE_DELTA,
-        longitudeDelta: LONGITUDE_DELTA,
+ class Mapa extends Component {
+
+
+  componentWillReceiveProps(nextProps) {
+    this.criaFonteDeDados(nextProps.enderecos);      
+    if(!(this.props.origem === nextProps.origem)){
+      this.props.getEnderecoPredict(nextProps.origem);   
+    }
+    if(!(this.props.destino === nextProps.destino)){
+      this.props.getEnderecoPredict(nextProps.destino);   
+    }
+
+    console.log(this.props);
+   
+  }
+
+
+
+  state = {
+    places: [
+      {
+        id: 1,
+        title: 'VIGIA ROGER',
+        description: 'Em ronda',
+        latitude: -23.6536,
+        longitude: -46.7251,
+        mark:'',
+        tipo:'v'
       },
-      markerPosition: {
-        latitude: 0,
-        longitude: 0,
+      {
+        id: 2,
+        title: 'Morador Mauricio',
+        description: 'Ronda solicitada',
+        latitude: -23.6536,
+        longitude: -46.7351,
+        mark:'',
+        tipo:'m'
+      },
+      {
+        id: 3,
+        title: 'Casa',
+        description: 'O melhor lugar do mundo',
+        latitude: -23.6636,
+        longitude: -46.7251,
+        mark:'',
+        tipo:'m'
       }
-    };
+    ]
   }
-   componentDidMount() {
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        var initialRegion = {
-          latitude: position.coords.latitude,
-          longitude: position.coords.longitude,
-          latitudeDelta: LATITUDE_DELTA,
-          longitudeDelta: LONGITUDE_DELTA,
-        }
-        this.setState({initialPosition: initialRegion});
-        this.setState({markerPosition: initialRegion});
-      },
-    (error) => alert(error.message),
-    { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000, distanceFilter: 10 },
-    );
-    this.watchId = navigator.geolocation.watchPosition(
-      (position) => {
-        var lastRegion = {
-            latitude: position.coords.latitude,
-            longitude: position.coords.longitude,
-            latitudeDelta: LATITUDE_DELTA,
-            longitudeDelta: LONGITUDE_DELTA,
+
+  componentWillMount(){
+    this.props.getLocalizacaoUsuario();
+    this.props.getLocalizacaoCasa();
+    this.criaFonteDeDados(this.props.enderecos);
+
+    
+
+  }
+
+  _renderCasa() {
+    if(!(this.props.longitudeCasa === null)) {
+    return (
+      <MapView.Marker
+            title= 'Casa'
+            ref="a"
+            description= 'Minha casa'
+            image={require('../Images/teste7.png')}
+            draggable
+            coordinate={{
+              latitude: this.props.latitudeCasa,
+              longitude: this.props.longitudeCasa,
+            }}
+            showsCalloutOnLoad
+        />
+        
+      )
+      
+
+    }
+  }
+
+  criaFonteDeDados(enderecos) {
+    const ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 })
+    this.fonteDeDados = ds.cloneWithRows(enderecos);
+  }
+
+  _enderecoSelecionado(placeID, resultadoOrigem, origem, destino) {
+    this.props.getEnderecoSelecionado(placeID, 
+                                      resultadoOrigem, 
+                                      origem,
+                                      destino
+                                    );        
+  }
+
+  _calcularDistancia(origem, destino) {
+    this.props.calculaDistancia(origem, destino);
+  }
+
+  _renderMarker(place, i) {
+    if (this.state.places[i].tipo === 'v' ) {
+      return (
+      <MapView.Marker
+      ref={ mark => place.mark = mark }
+      title={place.title}
+      description={place.description}
+      key={ place.id }
+      image={require('../Images/teste5.png')}
+      draggable
+      onDragEnd={(e) => {
+            const state = this.state;
+            state.places[i].latitude = e.nativeEvent.coordinate.latitude;
+            state.places[i].longitude = e.nativeEvent.coordinate.longitude;
+            this.setState(state);
           }
-        this.setState({initialPosition: lastRegion});
-        this.setState({markerPosition: lastRegion});
-      },
-      (error) => this.setState({ error: error.message }),
-      { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000, distanceFilter: 10 },
-    );
+        }
+      coordinate={{
+        latitude: place.latitude,
+        longitude: place.longitude,
+      }}
+    />
+    )
+    }
+
+    else {
+      return (
+        <MapView.Marker
+          ref={ mark => place.mark = mark }
+          title={place.title}
+          description={place.description}
+          key={ place.id }
+          draggable
+          onDragEnd={(e) => {
+                const state = this.state;
+                state.places[i].latitude = e.nativeEvent.coordinate.latitude;
+                state.places[i].longitude = e.nativeEvent.coordinate.longitude;
+                this.setState(state);
+          }}
+          coordinate={{
+            latitude: place.latitude,
+            longitude: place.longitude,
+          }}
+         />
+    )
+    }
   }
-   componentWillUnmount() {
-    navigator.geolocation.clearWatch(this.watchId);
+
+  _mapReady = () => {
+    this.state.places[0].mark.showCallout();
+  }
+
+  _renderListaEnderecos() {
+    if(this.props.resultadoDestino === true || this.props.resultadoOrigem === true){
+      return (
+        <View style={styles.searchResultsWrapper}>
+          <ListView
+              enableEmptySections
+              dataSource={this.fonteDeDados}
+              renderRow={(data) => {
+                return (
+                  <View>
+                    <ListItem button avatar 
+                      onPress={() => this._enderecoSelecionado(data.placeID, 
+                                                               this.props.resultadoOrigem,
+                                                               this.props.origemEnderecoSelecionado,
+                                                               this.props.destinoEnderecoSelecionado
+                                                            )}
+                    >
+                      <Left>
+                          <Icon style={styles.leftIcon} name='location' type="EvilIcons" /> 
+                      </Left>
+                      <Body>
+                        <Text style={styles.primaryText}>{data.primaryText}</Text>
+                        <Text style={styles.secundaryText}>{data.secondaryText}</Text>
+                      </Body>
+                    </ListItem>
+                  </View>
+                )  
+              }}                
+          />
+        </View>
+      );
+    }
+    return (<View></View>);
   }
    render() {
+
     return(
-      <MapView
-        provider={ PROVIDER_GOOGLE }
-        style={ styles.container }
-        //onPress={e => console.log(e.nativeEvent)}
-        //customMapStyle={ CustomMapStyle.styleMap }
-        //onUserLocationChange={e => console.log(e.nativeEvent)} preciso para pegar o location.precision
-        initialPosition={ this.state.initialPosition }>
-        <MapView.Marker
-          coordinate={ this.state.markerPosition }>
-          <View style={ styles.radius }>
-            <View style={ styles.marker } />
-          </View>
-        </MapView.Marker>
-      </MapView>
+      
+      <View style={styles.container}>
+      
+        <MapView
+          ref={map => this.mapView = map}
+          initialRegion={{
+            latitude:  this.props.region_latitude,
+            longitude: this.props.region_longitude,
+            latitudeDelta,
+            longitudeDelta,
+          }}
+          onMapReady={this._mapReady}
+          showsUserLocation={true}
+				showsMyLocationButton={true}
+
+          style={styles.mapView}
+        >
+          {this.state.places.map((place, i) => (
+            this._renderMarker(place, i)
+          ))}
+
+          {this._renderCasa() }
+           
+        </MapView>
+        {/* <ScrollView 
+          style={styles.placesContainer}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          pagingEnabled
+          onMomentumScrollEnd={e => {
+              const scrolled = e.nativeEvent.contentOffset.x;
+              const place = (scrolled > 0 )
+                ? Math.round(scrolled / Dimensions.get('window').width)
+                : 0;
+
+                const { latitude, longitude, mark } = this.state.places[place];
+
+                this.mapView.animateToCoordinate({
+                  latitude,
+                  longitude
+                }, 1000);
+
+                setTimeout(() => {
+                    mark.showCallout();
+                }, 1000);
+
+          }}
+        >
+            { this.state.places.map(place => (
+                <View  key={place.id} style={styles.place}>
+                  <Text>{place.longitude}</Text>
+                  <Text>{place.latitude}</Text>
+                </View>
+            ))}            
+        </ScrollView> */}
+            
+        <View style={styles.searchBox}>
+                <View style={styles.inputWrapper}>
+                    <Text style={styles.label}> Origem </Text>
+                    <InputGroup>
+                        <Icon name="search" size={15} color="#FF5E3A" />
+                        <Input style={styles.inputSearch} 
+                            placeholder="A onde você irá chegar?"
+                            onChangeText={texto => (this.props.modificaOrigem(texto))}
+                            onFocus={() => this.props.resultadoSearchBox('origem')}
+                            value={this.props.origem}
+                            /> 
+                    </InputGroup>
+                </View>
+                <View style={styles.secondInputWrapper}>
+                    <Text style={styles.label}> Destino </Text>
+                    <InputGroup>
+                        <Icon name="search" size={15} color="#FF5E3A" />
+                        <Input style={styles.inputSearch} 
+                            placeholder="Para onde deseja ir?"
+                            onChangeText={texto => (this.props.modificaDestino(texto))}
+                            onFocus={() => this.props.resultadoSearchBox('destino')}
+                            value={this.props.destino}
+                            /> 
+                         
+                    </InputGroup>
+                </View>
+            </View>
+
+
+
+            <TouchableHighlight 
+              onPress={() => {
+                        this._calcularDistancia(this.props.origemEnderecoSelecionado, this.props.destinoEnderecoSelecionado)
+                        console.log(this.props)
+                      }}
+              style={styles.btnConfirmar}
+            >
+                <Text style={styles.txtConfirmar} >CONFIRMAR SOLICITAÇÃO</Text>
+            </TouchableHighlight>
+                     
+            { this._renderListaEnderecos() }
+
+            
+      </View>
+
     );
     
   }
 }
+
+
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems:'center',
-  },
-  radius: {
-    height: 50,
-    width: 50,
-    borderRadius: 50 / 2,
-    overflow: 'hidden',
-    backgroundColor: 'rgba(0, 122, 255, 0.1)',
-    borderWidth: 1,
-    borderColor: 'rgba(0, 112, 255, 0.3)',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  marker:{
-    height: 20,
-    width: 20,
-    borderWidth: 3,
-    borderColor: 'white',
-    borderRadius: 20 / 2,
-    overflow: 'hidden',
-    backgroundColor: '#007AFF',
-  }
+    mapView: {
+      position: 'absolute',
+      top: 0,
+      left: 0, 
+      bottom: 0, 
+      right: 0
+    },
+    container: {
+      flex:1, 
+      justifyContent: 'flex-end',
+      alignItems: 'center',
+    },
+    placesContainer: {
+        width: '100%',
+        maxHeight: 200,
+    },
+    place: {
+      width: width -40,
+      maxHeight: 200, 
+      backgroundColor: '#fff',
+      marginHorizontal: 20, 
+    },
+    searchBox: {
+      top: 0,
+      position: 'absolute',
+      width: '100%',
+    },
+    inputWrapper: {
+        marginLeft: 15, 
+        marginRight: 10,
+        marginTop: 10,
+        marginBottom: 0,
+        backgroundColor: '#fff',
+        opacity: 0.9,
+        borderRadius: 7,
+    },
+    secondInputWrapper: {
+        marginLeft: 15, 
+        marginRight: 10,
+        marginTop: 0,
+        backgroundColor: '#fff',
+        opacity: 0.9,
+        borderRadius: 7,
+    },
+    inputSearch: {
+        fontSize: 14,
+    },
+    label: { 
+        fontSize: 10,
+        fontStyle: 'italic',
+        marginLeft: 10,
+        marginTop: 10,
+        marginBottom: 0
+    },
+    searchResultsWrapper: {
+      bottom: 0,
+      position: 'absolute',
+      width: width,
+      marginLeft:20,
+      backgroundColor: '#fff',
+      opacity: 0.9,
+      borderRadius: 7,
+      elevation: 5
+    },
+    primaryText: {
+        fontWeight: 'bold',
+        color: '#373737',
+    },
+    secondaryText: {
+        fontStyle: 'italic',
+        color: "#7D7D7D",
+    },
+    leftContainer: {
+        flexWrap: 'wrap',
+        alignItems: 'flex-start',
+        borderLeftColor: '#7D7D7D',
+    },
+    leftIcon: {
+        
+        color: '#7D7D7D',
+    },
+    distance: {
+        fontSize: 12
+    },
+    btnConfirmar: {
+        backgroundColor: '#f9dc36',
+        width: 200,
+        height: 35,
+        borderRadius: 3,
+        justifyContent: 'center',
+        alignItems: 'center',
+        opacity:0.9,
+        elevation: 4,
+        marginBottom:20,
+
+    },
+    txtConfirmar: {
+      color:'#323232',
+      fontWeight: 'bold',
+      fontSize: 14
+    }
+
+    
 }); 
+
+
+const mapStateToProps = state => (
+  {
+    
+      origemEnderecoSelecionado: state.MapsReducer.origemEnderecoSelecionado,
+      destinoEnderecoSelecionado: state.MapsReducer.destinoEnderecoSelecionado,
+      region_latitude: state.MapsReducer.region_latitude,
+      region_longitude: state.MapsReducer.region_longitude,
+      origem: state.MapsReducer.origem,
+      destino: state.MapsReducer.destino,
+      resultadoOrigem: state.MapsReducer.resultadoOrigem,
+      resultadoDestino: state.MapsReducer.resultadoDestino,
+      latitudeCasa: state.MapsReducer.latitudeCasa,
+      longitudeCasa: state.MapsReducer.longitudeCasa,
+      distanciaMoradorCasa: state.MapsReducer.distanciaMoradorCasa,
+      enderecos: _.map(state.MapsReducer.enderecos, (val, uid) => {
+        return { ...val, uid}
+      })   
+  }
+)
+export default connect(mapStateToProps, { 
+                                          getLocalizacaoUsuario, 
+                                          modificaDestino, 
+                                          modificaOrigem, 
+                                          resultadoSearchBox, 
+                                          getEnderecoPredict, 
+                                          getEnderecoSelecionado,
+                                          calculaDistancia,
+                                          getLocalizacaoCasa })(Mapa);
