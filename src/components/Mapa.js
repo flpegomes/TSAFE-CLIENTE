@@ -13,7 +13,8 @@ import {
         resultadoSearchBox, 
         getEnderecoPredict, 
         getEnderecoSelecionado,
-        calculaDistancia } from '../Actions/MapsActions';
+        calculaDistancia,
+        getLocalizacaoCasa } from '../Actions/MapsActions';
 
 
 
@@ -33,6 +34,8 @@ const longitudeDelta = ASPECT_RATIO * latitudeDelta;
     if(!(this.props.destino === nextProps.destino)){
       this.props.getEnderecoPredict(nextProps.destino);   
     }
+
+    console.log(this.props);
    
   }
 
@@ -72,8 +75,35 @@ const longitudeDelta = ASPECT_RATIO * latitudeDelta;
 
   componentWillMount(){
     this.props.getLocalizacaoUsuario();
+    this.props.getLocalizacaoCasa();
     this.criaFonteDeDados(this.props.enderecos);
+
+    
+
   }
+
+  _renderCasa() {
+    if(!(this.props.longitudeCasa === null)) {
+    return (
+      <MapView.Marker
+            title= 'Casa'
+            ref="a"
+            description= 'Minha casa'
+            image={require('../Images/teste7.png')}
+            draggable
+            coordinate={{
+              latitude: this.props.latitudeCasa,
+              longitude: this.props.longitudeCasa,
+            }}
+            showsCalloutOnLoad
+        />
+        
+      )
+      
+
+    }
+  }
+
   criaFonteDeDados(enderecos) {
     const ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 })
     this.fonteDeDados = ds.cloneWithRows(enderecos);
@@ -200,6 +230,9 @@ const longitudeDelta = ASPECT_RATIO * latitudeDelta;
           {this.state.places.map((place, i) => (
             this._renderMarker(place, i)
           ))}
+
+          {this._renderCasa() }
+           
         </MapView>
         {/* <ScrollView 
           style={styles.placesContainer}
@@ -402,6 +435,8 @@ const mapStateToProps = state => (
       destino: state.MapsReducer.destino,
       resultadoOrigem: state.MapsReducer.resultadoOrigem,
       resultadoDestino: state.MapsReducer.resultadoDestino,
+      latitudeCasa: state.MapsReducer.latitudeCasa,
+      longitudeCasa: state.MapsReducer.longitudeCasa,
       distanciaMoradorCasa: state.MapsReducer.distanciaMoradorCasa,
       enderecos: _.map(state.MapsReducer.enderecos, (val, uid) => {
         return { ...val, uid}
@@ -415,4 +450,5 @@ export default connect(mapStateToProps, {
                                           resultadoSearchBox, 
                                           getEnderecoPredict, 
                                           getEnderecoSelecionado,
-                                          calculaDistancia })(Mapa);
+                                          calculaDistancia,
+                                          getLocalizacaoCasa })(Mapa);

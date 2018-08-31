@@ -15,6 +15,8 @@ const INITIAL_STATE = {
         ],
     origemEnderecoSelecionado : null,
     destinoEnderecoSelecionado : null,
+    longitudeCasa: null,
+    latitudeCasa: null,
 };
 
 import { 
@@ -25,7 +27,8 @@ import {
         GET_ENDERECO_PREDICT,
         GET_ENDERECO_SELECIONADO_ORIGEM,
         GET_ENDERECO_SELECIONADO_DESTINO,
-        GET_DISTANCIA_MATRIX
+        GET_DISTANCIA_MATRIX,
+        GET_LOCALIZACAO_CASA
 
     } from '../Actions/Types';
 
@@ -52,6 +55,8 @@ export default (state = INITIAL_STATE, action) => {
             return { ...state, destinoEnderecoSelecionado: action.payload, resultadoDestino: false, destino: action.payload.name}
         case GET_DISTANCIA_MATRIX:
             return { ...state, distanciaMoradorCasa: action.payload}
+        case GET_LOCALIZACAO_CASA:
+            return { ...state, longitudeCasa: action.payload.longitude_casa, latitudeCasa : action.payload.latitude_casa}
         default:
             return state;
     }

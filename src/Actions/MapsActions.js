@@ -7,13 +7,15 @@ import {
         GET_ENDERECO_SELECIONADO_ORIGEM,
         GET_ENDERECO_SELECIONADO_DESTINO,
         GET_DISTANCIA_MATRIX,
-
+        GET_LOCALIZACAO_CASA
     } from './Types';
+
 import { Actions } from 'react-native-router-flux';
 import RNGooglePlaces from 'react-native-google-places';
 import request from '../util/Request';
 import firebase from 'firebase';
 import b64 from 'base-64';
+import _ from 'lodash';
 
 
 
@@ -107,6 +109,20 @@ export const calculaDistancia = (origem, destino) =>  {
                         payload: res.body
                     })
                })
+    }
+}
+
+export const getLocalizacaoCasa = () => {
+    const { currentUser } = firebase.auth();        
+    return dispatch => {
+        let usuarioEmailB64 = b64.encode(currentUser.email);
+        firebase.database().ref(`/usuarios/${usuarioEmailB64}`)
+            .on("value", snapshot => {
+
+                const dadosUsuario = _.first(_.values(snapshot.val()));
+
+                dispatch({ type: GET_LOCALIZACAO_CASA, payload: dadosUsuario})
+            })
     }
 }
 
