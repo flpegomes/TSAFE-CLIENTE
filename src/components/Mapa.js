@@ -14,7 +14,8 @@ import {
         getEnderecoPredict, 
         getEnderecoSelecionado,
         calculaDistancia,
-        getLocalizacaoCasa } from '../Actions/MapsActions';
+        getLocalizacaoCasa,
+        atualizaRota } from '../Actions/MapsActions';
 
 
 
@@ -71,37 +72,51 @@ const longitudeDelta = ASPECT_RATIO * latitudeDelta;
         mark:'',
         tipo:'m'
       }
-    ]
+    ],
+
   }
 
   componentWillMount(){
     this.props.getLocalizacaoUsuario();
     this.props.getLocalizacaoCasa();
     this.criaFonteDeDados(this.props.enderecos);
-
+    
+    
    
 
   }
 
-  _renderCasa() {
+  _renderCasa(coordVigiaLatitude, coordVigiaLongitude) {
     if(!(this.props.longitudeCasa === null)) {
     return (
-      <MapView.Marker
-            title= 'Casa'
-            ref="a"
-            description= 'Minha casa'
-            image={require('../Images/teste7.png')}
-            draggable
-            coordinate={{
-              latitude: this.props.latitudeCasa,
-              longitude: this.props.longitudeCasa,
-            }}
-            showsCalloutOnLoad
-        />
-        
-      )
-      
+      <View>
+        <MapView.Marker
+              title= 'Casa'
+              ref="a"
+              description= 'Minha casa'
+              image={require('../Images/teste7.png')}
+              draggable
+              coordinate={{
+                latitude: this.props.latitudeCasa,
+                longitude: this.props.longitudeCasa,
+              }}
+              showsCalloutOnLoad
+          />
+          
 
+          <MapView.Marker
+              title= 'Vigia'
+              ref="a"
+              description= 'Vigia Roger'
+              draggable
+              coordinate={{
+                latitude: coordVigiaLatitude,
+                longitude: coordVigiaLongitude,
+              }}
+              showsCalloutOnLoad
+          />
+        </View>
+      )
     }
   }
 
@@ -122,56 +137,13 @@ const longitudeDelta = ASPECT_RATIO * latitudeDelta;
     this.props.calculaDistancia(origem, destino);
   }
 
-  _renderMarker(place, i) {
-    if (this.state.places[i].tipo === 'v' ) {
-      return (
-      <MapView.Marker
-      ref={ mark => place.mark = mark }
-      title={place.title}
-      description={place.description}
-      key={ place.id }
-      image={require('../Images/teste5.png')}
-      draggable
-      onDragEnd={(e) => {
-            const state = this.state;
-            state.places[i].latitude = e.nativeEvent.coordinate.latitude;
-            state.places[i].longitude = e.nativeEvent.coordinate.longitude;
-            this.setState(state);
-          }
-        }
-      coordinate={{
-        latitude: place.latitude,
-        longitude: place.longitude,
-      }}
-    />
-    )
-    }
-
-    else {
-      return (
-        <MapView.Marker
-          ref={ mark => place.mark = mark }
-          title={place.title}
-          description={place.description}
-          key={ place.id }
-          draggable
-          onDragEnd={(e) => {
-                const state = this.state;
-                state.places[i].latitude = e.nativeEvent.coordinate.latitude;
-                state.places[i].longitude = e.nativeEvent.coordinate.longitude;
-                this.setState(state);
-          }}
-          coordinate={{
-            latitude:   place.latitude,
-            longitude: place.longitude,
-          }}
-         />
-    )
-    }
-  }
-
   _mapReady = () => {
-    this.state.places[0].mark.showCallout();
+    setTimeout(() => {
+      this.props.statusBarHeight=1;
+    },1500);
+    setTimeout(() => {
+      this.props.statusBarHeight=0;
+    },1500);
   }
 
   _renderListaEnderecos() {
@@ -209,53 +181,36 @@ const longitudeDelta = ASPECT_RATIO * latitudeDelta;
     return (<View></View>);
   }
    render() {
-
-
-    const d = {
-      latitude: this.props.latitudeCasa,
-      longitude: this.props.longitudeCasa,
-    }
-    const o = {
-      latitude: -23.53477056,
-      longitude: -46.72748665,
+    let coordVigia = {
+      latitude: -23.5271216, 
+      longitude: -46.7261788
     }
 
     return(
-      
+      <View style={{paddingTop: this.props.statusBarHeight, flex:1}}> 
+
       <View style={styles.container}>
-      
         <MapView
+          showsUserLocation={true}
+          showMyLocationButton={true}
           ref={map => this.mapView = map}
           initialRegion={{
             latitude:  this.props.region_latitude,
             longitude: this.props.region_longitude,
             latitudeDelta,
             longitudeDelta,
-          }}
-          onMapReady={this._mapReady}
-          showsUserLocation={true}
-          showsMyLocationButton={true}
+          }}          
+          onMapReady={this._mapReady}           
           showsPointsOfInterest={false}
-          rotateEnable={false}
-          showsBuildings={false}
-          zoomControlEnabled
-
           style={styles.mapView}
         >
-          {this.state.places.map((place, i) => (
-            this._renderMarker(place, i)
-          ))}
-
-          {this._renderCasa() }
+          {this._renderCasa(coordVigia.latitude, coordVigia.longitude) }
+          
+          
+        
           
 
-          <MapViewDirections
-            origin={o}
-            destination={d}
-            apikey='AIzaSyCCvLwYKMDVy2u6CqJl9zAdGOYpsvuVngM'
-            strokeWidth={3}
-            strokeColor='#f9dc36'
-            />
+          
         </MapView>
         {/* <ScrollView 
           style={styles.placesContainer}
@@ -306,20 +261,30 @@ const longitudeDelta = ASPECT_RATIO * latitudeDelta;
             </View>
 
 
+            <View style={styles.confirmarContainer}>
+              <View style={styles.tempoMoradorContainer}>
+                <Text style={{fontWeight: 'bold', fontSize:28, color:'#f9dc36'}}>-</Text>
+                <Text style={{fontWeight: 'bold', fontSize:14, color:'#323232'}}>{Math.round(this.props.tempoRotaMorador)} min.</Text>
+              </View>
+              
 
-            <TouchableHighlight 
-              onPress={() => {
-                        this._calcularDistancia(this.props.origemEnderecoSelecionado, this.props.destinoEnderecoSelecionado)
-                        console.log(this.props)
-                      }}
-              style={styles.btnConfirmar}
-            >
-                <Text style={styles.txtConfirmar} >CONFIRMAR SOLICITAÇÃO</Text>
-            </TouchableHighlight>
+              <TouchableHighlight 
+                onPress={() => {}}
+                style={styles.btnConfirmar} 
+              >
+                  <Text style={styles.txtConfirmar} >CONFIRMAR SOLICITAÇÃO</Text>
+              </TouchableHighlight>
+
+              <View style={styles.tempoVigiaContainer}>
+                <Text style={{fontWeight: 'bold', fontSize:28, color:'#323232'}}>-</Text>
+                <Text style={{fontWeight: 'bold', fontSize:14, color:'#323232'}}>{Math.round(this.props.tempoRotaVigia)} min.</Text>
+
+              </View>
+            </View>
                      
             { this._renderListaEnderecos() }
 
-            
+      </View>
       </View>
 
     );
@@ -334,12 +299,14 @@ const styles = StyleSheet.create({
       top: 0,
       left: 0, 
       bottom: 0, 
-      right: 0
+      right: 0,
     },
     container: {
       flex:1, 
       justifyContent: 'flex-end',
       alignItems: 'center',
+      
+
     },
     placesContainer: {
         width: '100%',
@@ -358,8 +325,8 @@ const styles = StyleSheet.create({
     },
     inputWrapper: {
         marginLeft: 15, 
-        marginRight: 10,
-        marginTop: 10,
+        marginRight: 15,
+        marginTop: 60,
         marginBottom: 0,
         backgroundColor: '#222',
         opacity: 0.9,
@@ -417,14 +384,14 @@ const styles = StyleSheet.create({
     },
     btnConfirmar: {
         backgroundColor: '#f9dc36',
-        width: 200,
+        flex:3,
         height: 35,
         borderRadius: 3,
         justifyContent: 'center',
         alignItems: 'center',
         opacity:0.9,
         elevation: 4,
-        marginBottom:20,
+        marginBottom: 20,
 
     },
     txtConfirmar: {
@@ -434,9 +401,34 @@ const styles = StyleSheet.create({
     },
     iconSearch: {
       color: '#f9dc36',
+    },
+    confirmarContainer: {
+      flexDirection: 'row',
+      height:35,
+      marginBottom:20
+    },
+    tempoMoradorContainer: {
+      borderRadius:3, 
+      width: 20,
+      flex:1,
+      backgroundColor: "#fff",
+      marginHorizontal: 10,
+      elevation:4,
+      justifyContent: 'center',
+      alignItems: 'center',
+      flexDirection: 'row',
+    },
+    tempoVigiaContainer: {
+      borderRadius:3, 
+      width: 20,
+      flex:1,
+      marginHorizontal: 10,
+      elevation:4,
+      backgroundColor: "#fff",
+      justifyContent: 'center',
+      alignItems: 'center',
+      flexDirection: 'row',
     }
-
-    
 }); 
 
 
@@ -453,7 +445,10 @@ const mapStateToProps = state => (
       resultadoDestino: state.MapsReducer.resultadoDestino,
       latitudeCasa: state.MapsReducer.latitudeCasa,
       longitudeCasa: state.MapsReducer.longitudeCasa,
+      statusBarHeight: state.MapsReducer.statusBarHeight,
       distanciaMoradorCasa: state.MapsReducer.distanciaMoradorCasa,
+      tempoRotaMorador: state.MapsReducer.tempoRotaMorador,
+      tempoRotaVigia: state.MapsReducer.tempoRotaVigia,
       enderecos: _.map(state.MapsReducer.enderecos, (val, uid) => {
         return { ...val, uid}
       })   
@@ -467,4 +462,5 @@ export default connect(mapStateToProps, {
                                           getEnderecoPredict, 
                                           getEnderecoSelecionado,
                                           calculaDistancia,
-                                          getLocalizacaoCasa })(Mapa);
+                                          getLocalizacaoCasa,
+                                          atualizaRota })(Mapa);

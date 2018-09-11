@@ -17,6 +17,9 @@ const INITIAL_STATE = {
     destinoEnderecoSelecionado : null,
     longitudeCasa: null,
     latitudeCasa: null,
+    statusBarHeight: 0,
+    tempoRotaMorador: "00:00",
+    tempoRotaVigia: "00:00"
 };
 
 import { 
@@ -28,7 +31,9 @@ import {
         GET_ENDERECO_SELECIONADO_ORIGEM,
         GET_ENDERECO_SELECIONADO_DESTINO,
         GET_DISTANCIA_MATRIX,
-        GET_LOCALIZACAO_CASA
+        GET_LOCALIZACAO_CASA,
+        ATUALIZA_ROTA,
+        ATUALIZA_ROTA_VIGIA
 
     } from '../Actions/Types';
 
@@ -57,6 +62,11 @@ export default (state = INITIAL_STATE, action) => {
             return { ...state, distanciaMoradorCasa: action.payload}
         case GET_LOCALIZACAO_CASA:
             return { ...state, longitudeCasa: action.payload.longitude_casa, latitudeCasa : action.payload.latitude_casa}
+        case ATUALIZA_ROTA:
+            console.log(action.payload.duration)
+            return { ...state, tempoRotaMorador: action.payload.duration }
+        case ATUALIZA_ROTA_VIGIA:
+            return { ...state, tempoRotaVigia: action.payload.duration }
         default:
             return state;
     }

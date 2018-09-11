@@ -7,7 +7,9 @@ import {
         GET_ENDERECO_SELECIONADO_ORIGEM,
         GET_ENDERECO_SELECIONADO_DESTINO,
         GET_DISTANCIA_MATRIX,
-        GET_LOCALIZACAO_CASA
+        GET_LOCALIZACAO_CASA,
+        ATUALIZA_ROTA,
+        ATUALIZA_ROTA_VIGIA
     } from './Types';
 
 import { Actions } from 'react-native-router-flux';
@@ -17,7 +19,25 @@ import firebase from 'firebase';
 import b64 from 'base-64';
 import _ from 'lodash';
 
-
+export const atualizaRota = (results, rota) => {
+    console.log('28')
+    return(dispatch) => {
+        if (rota === 'morador') {
+            dispatch({
+            type: ATUALIZA_ROTA,
+            payload: results
+            })
+        
+        }
+        else if( rota === 'vigia'){
+            dispatch({
+            type: ATUALIZA_ROTA,
+            payload: results
+            })
+        
+        }
+    }
+} 
 
 export const getLocalizacaoUsuario = () => {
     return(dispatch) => {
