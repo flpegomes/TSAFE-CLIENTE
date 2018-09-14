@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Button, Text, StyleSheet, Dimensions, ScrollView, ListView, TouchableHighlight } from 'react-native';
+import { View, Button, Text, StyleSheet, Dimensions, ScrollView, ListView, TouchableHighlight, Image } from 'react-native';
 import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
 import { connect } from 'react-redux';
 import { InputGroup, Input, Icon, List, ListItem, Left, Body } from 'native-base';
@@ -15,7 +15,9 @@ import {
         getEnderecoSelecionado,
         calculaDistancia,
         getLocalizacaoCasa,
-        atualizaRota } from '../Actions/MapsActions';
+        atualizaRota,
+        confirmaSolicitacao,
+        cancelaSolicitacao } from '../Actions/MapsActions';
 
 
 
@@ -27,8 +29,32 @@ const longitudeDelta = ASPECT_RATIO * latitudeDelta;
 
  class Mapa extends Component {
 
+  _renderBotao = (coordAtual) => {
+
+    if(this.props.solicitado === false ) {
+      return (
+        <TouchableHighlight 
+                    onPress={() => this.props.confirmaSolicitacao(this.props.origemEnderecoSelecionado, coordAtual)}
+                    style={styles.btnConfirmar} 
+                  >
+                      <Text style={styles.txtConfirmar} >CONFIRMAR SOLICITAÇÃO</Text>
+        </TouchableHighlight>
+      )
+    }
+    else if(this.props.solicitado === true) {
+      return (
+        <TouchableHighlight 
+          onPress={() => { this.props.cancelaSolicitacao() }}
+          style={styles.btnConfirmar} 
+        >
+          <Text style={styles.txtConfirmar} >CANCELAR CONFIRMAÇÃO</Text>
+        </TouchableHighlight>
+      )
+    }
+  }
+
   _renderRotaVigia = (latitude, longitude) => {
-    if(!(this.props.origemEnderecoSelecionado === null)) {
+    if(!(this.props.origemEnderecoSelecionado === null) && this.props.solicitado === true) {
       return (
         <MapViewDirections
         origin={`${latitude}, ${longitude}`}
@@ -42,8 +68,7 @@ const longitudeDelta = ASPECT_RATIO * latitudeDelta;
         // }
         
         onReady={(result) => {
-          this.setState({ tempoVigia: result.duration})
-          
+          this.setState({tempoVigia: result.duration})
         }}
 
       />
@@ -54,7 +79,7 @@ const longitudeDelta = ASPECT_RATIO * latitudeDelta;
   }
 
   _renderRotaMorador = (latitude, longitude) => {
-    if(!(this.props.origemEnderecoSelecionado === null)) {
+    if(!(this.props.origemEnderecoSelecionado === null) && this.props.solicitado === true ) {
       return (
         <MapViewDirections
         origin={`${latitude}, ${longitude}`}
@@ -125,6 +150,7 @@ const longitudeDelta = ASPECT_RATIO * latitudeDelta;
     ],
     tempoVigia: '0',
     tempoMorador: '0',
+    confirmaSolicitacao: false
 
   }
 
@@ -234,7 +260,7 @@ const longitudeDelta = ASPECT_RATIO * latitudeDelta;
       longitude: -46.7261788
     }
 
-    let coordDestino = {
+    let coordAtual = {
       latitude: this.props.region_latitude,
       longitude: this.props.region_longitude
     }
@@ -310,28 +336,18 @@ const longitudeDelta = ASPECT_RATIO * latitudeDelta;
                     </InputGroup>
                 </View>
             </View>
-
-
-            <View style={styles.confirmarContainer}>
-              <View style={styles.tempoMoradorContainer}>
-                <Text style={{fontWeight: 'bold', fontSize:28, color:'#f9dc36'}}>-</Text>
-                <Text style={{fontWeight: 'bold', fontSize:14, color:'#323232'}}>{Math.round(this.state.tempoMorador) } min.</Text>
+             
+              <View style={styles.confirmarContainer}>
+                <View style={styles.tempoMoradorContainer}>
+                  <Image source={require('../Images/morador_icone.png')} style={{ height: 20, width: 20}} />
+                  <Text style={{fontWeight: 'bold', fontSize:14, color:'#323232'}}>{Math.round(this.state.tempoMorador) } min.</Text>
+                </View>
+                {this._renderBotao(coordAtual)}
+                <View style={styles.tempoVigiaContainer}>
+                  <Image source={require('../Images/vigia_icone.png')} style={{ height: 20, width: 20}} />
+                  <Text style={{fontWeight: 'bold', fontSize:14, color:'#323232'}}>  {Math.round(this.state.tempoVigia)} min.</Text>
+                </View>
               </View>
-              
-
-              <TouchableHighlight 
-                onPress={() => {}}
-                style={styles.btnConfirmar} 
-              >
-                  <Text style={styles.txtConfirmar} >CONFIRMAR SOLICITAÇÃO</Text>
-              </TouchableHighlight>
-
-              <View style={styles.tempoVigiaContainer}>
-                <Text style={{fontWeight: 'bold', fontSize:28, color:'#323232'}}>-</Text>
-                <Text style={{fontWeight: 'bold', fontSize:14, color:'#323232'}}>{Math.round(this.state.tempoVigia)} min.</Text>
-
-              </View>
-            </View>
                      
             { this._renderListaEnderecos() }
 
@@ -435,7 +451,7 @@ const styles = StyleSheet.create({
     },
     btnConfirmar: {
         backgroundColor: '#f9dc36',
-        flex:3,
+        flex:4,
         height: 35,
         borderRadius: 3,
         justifyContent: 'center',
@@ -461,7 +477,7 @@ const styles = StyleSheet.create({
     tempoMoradorContainer: {
       borderRadius:3, 
       width: 20,
-      flex:1,
+      flex:2,
       backgroundColor: "#fff",
       marginHorizontal: 10,
       elevation:4,
@@ -472,7 +488,7 @@ const styles = StyleSheet.create({
     tempoVigiaContainer: {
       borderRadius:3, 
       width: 20,
-      flex:1,
+      flex:2,
       marginHorizontal: 10,
       elevation:4,
       backgroundColor: "#fff",
@@ -500,6 +516,7 @@ const mapStateToProps = state => (
       distanciaMoradorCasa: state.MapsReducer.distanciaMoradorCasa,
       tempoRotaMorador: state.MapsReducer.tempoRotaMorador,
       tempoRotaVigia: state.MapsReducer.tempoRotaVigia,
+      solicitado: state.MapsReducer.solicitado,
       enderecos: _.map(state.MapsReducer.enderecos, (val, uid) => {
         return { ...val, uid}
       })   
@@ -514,4 +531,6 @@ export default connect(mapStateToProps, {
                                           getEnderecoSelecionado,
                                           calculaDistancia,
                                           getLocalizacaoCasa,
-                                          atualizaRota })(Mapa);
+                                          atualizaRota,
+                                          confirmaSolicitacao,
+                                          cancelaSolicitacao })(Mapa);

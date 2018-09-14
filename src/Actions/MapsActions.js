@@ -9,7 +9,9 @@ import {
         GET_DISTANCIA_MATRIX,
         GET_LOCALIZACAO_CASA,
         ATUALIZA_ROTA,
-        ATUALIZA_ROTA_VIGIA
+        ATUALIZA_ROTA_VIGIA,
+        CONFIMAR_SOLICITACAO,
+        CANCELAR_SOLICITACAO
     } from './Types';
 
 import { Actions } from 'react-native-router-flux';
@@ -134,19 +136,27 @@ export const getLocalizacaoCasa = () => {
     }
 }
 
-export const confirmarPedido = () => {
+export const confirmaSolicitacao = (chegada, origem ) => {
     return dispatch => {
         const { currentUser } = firebase.auth();
         let emailUsuarioB64 = b64.encode(currentUser.email);
         firebase.database().ref(`/usuario_pedidos/${emailUsuarioB64}`)
             .push({
-                    chegada_endereco: origem.name,
-                    chegada_latitude: origem.latitude,
-                    chegada_longitude: origem.longitude,
-                    
-                    
-
+                    chegada_endereco: chegada.name,
+                    chegada_latitude: chegada.latitude,
+                    chegada_longitude: chegada.longitude,
+                    origem_latide: origem.latitude,
+                    origem_longitude: origem.longitude,
             })
+            .then(
+                dispatch({ type: CONFIMAR_SOLICITACAO })
+            )
 
+    }
+}
+
+export const cancelaSolicitacao = () => {
+    return {
+        type: CANCELAR_SOLICITACAO
     }
 }

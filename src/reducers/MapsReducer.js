@@ -19,7 +19,8 @@ const INITIAL_STATE = {
     latitudeCasa: null,
     statusBarHeight: 0,
     tempoRotaMorador: "00:00",
-    tempoRotaVigia: "00:00"
+    tempoRotaVigia: "00:00",
+    solicitado: false,
 };
 
 import { 
@@ -33,7 +34,9 @@ import {
         GET_DISTANCIA_MATRIX,
         GET_LOCALIZACAO_CASA,
         ATUALIZA_ROTA,
-        ATUALIZA_ROTA_VIGIA
+        ATUALIZA_ROTA_VIGIA,
+        CONFIMAR_SOLICITACAO,
+        CANCELAR_SOLICITACAO
 
     } from '../Actions/Types';
 
@@ -67,6 +70,10 @@ export default (state = INITIAL_STATE, action) => {
             return { ...state, tempoRotaMorador: action.payload }
         case ATUALIZA_ROTA_VIGIA:
             return { ...state, tempoRotaVigia: action.payload.duration }
+        case CONFIMAR_SOLICITACAO:
+            return { ...state, solicitado: true}
+        case CANCELAR_SOLICITACAO:
+            return { ...state, solicitado: false}
         default:
             return state;
     }
