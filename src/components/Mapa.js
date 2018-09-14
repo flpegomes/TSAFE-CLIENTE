@@ -42,7 +42,7 @@ const longitudeDelta = ASPECT_RATIO * latitudeDelta;
         // }
         
         onReady={(result) => {
-          atualizaRota(result, "morador")
+          this.setState({ tempoVigia: result.duration})
           
         }}
 
@@ -97,6 +97,7 @@ const longitudeDelta = ASPECT_RATIO * latitudeDelta;
         tipo:'m'
       }
     ],
+    tempoVigia: '0'
 
   }
 
@@ -301,7 +302,7 @@ const longitudeDelta = ASPECT_RATIO * latitudeDelta;
             <View style={styles.confirmarContainer}>
               <View style={styles.tempoMoradorContainer}>
                 <Text style={{fontWeight: 'bold', fontSize:28, color:'#f9dc36'}}>-</Text>
-                <Text style={{fontWeight: 'bold', fontSize:14, color:'#323232'}}>{Math.round(this.props.tempoRotaMorador)} min.</Text>
+                <Text style={{fontWeight: 'bold', fontSize:14, color:'#323232'}}>{Math.round(this.state.tempoVigia) } min.</Text>
               </View>
               
 

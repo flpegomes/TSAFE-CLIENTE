@@ -63,8 +63,8 @@ export default (state = INITIAL_STATE, action) => {
         case GET_LOCALIZACAO_CASA:
             return { ...state, longitudeCasa: action.payload.longitude_casa, latitudeCasa : action.payload.latitude_casa}
         case ATUALIZA_ROTA:
-            console.log(action.payload.duration)
-            return { ...state, tempoRotaMorador: action.payload.duration }
+            console.log(action.payload)
+            return { ...state, tempoRotaMorador: action.payload }
         case ATUALIZA_ROTA_VIGIA:
             return { ...state, tempoRotaVigia: action.payload.duration }
         default:

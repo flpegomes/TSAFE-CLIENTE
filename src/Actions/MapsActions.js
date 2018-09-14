@@ -19,23 +19,11 @@ import firebase from 'firebase';
 import b64 from 'base-64';
 import _ from 'lodash';
 
-export const atualizaRota = (results, rota) => {
-    return(dispatch) => {
-        if (rota === 'morador') {
-            dispatch({
-            type: ATUALIZA_ROTA,
-            payload: results
-            })
-        
-        }
-        else if( rota === 'vigia'){
-            dispatch({
-            type: ATUALIZA_ROTA,
-            payload: results
-            })
-        
-        }
-        console.log(`sas`)
+export const atualizaRota = (results) => {
+    console.log(results)    
+    return {
+        type: ATUALIZA_ROTA,
+        payload: results.duration
     }
 } 
 
