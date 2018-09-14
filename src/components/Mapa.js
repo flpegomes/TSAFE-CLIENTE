@@ -27,7 +27,31 @@ const longitudeDelta = ASPECT_RATIO * latitudeDelta;
 
  class Mapa extends Component {
 
+  _renderRotaVigia = (latitude, longitude) => {
+    if(!(this.props.origemEnderecoSelecionado === null)) {
+      return (
+        <MapViewDirections
+        origin={`${latitude}, ${longitude}`}
+        destination={`${this.props.origemEnderecoSelecionado.latitude}, ${this.props.origemEnderecoSelecionado.longitude}`}
+        apikey='AIzaSyCCvLwYKMDVy2u6CqJl9zAdGOYpsvuVngM'
+        strokeWidth={3}
+        strokeColor="hotpink"
+        // onReady={(result) => {
+        //       atualizaRota()              
+        //    }
+        // }
+        
+        onReady={(result) => {
+          atualizaRota(result, "morador")
+          
+        }}
 
+      />
+      )
+    }
+    return null
+          
+  }
   componentWillReceiveProps(nextProps) {
     this.criaFonteDeDados(nextProps.enderecos);      
     if(!(this.props.origem === nextProps.origem)){
@@ -80,10 +104,6 @@ const longitudeDelta = ASPECT_RATIO * latitudeDelta;
     this.props.getLocalizacaoUsuario();
     this.props.getLocalizacaoCasa();
     this.criaFonteDeDados(this.props.enderecos);
-    
-    
-   
-
   }
 
   _renderCasa(coordVigiaLatitude, coordVigiaLongitude) {
@@ -186,6 +206,11 @@ const longitudeDelta = ASPECT_RATIO * latitudeDelta;
       longitude: -46.7261788
     }
 
+    let coordDestino = {
+      latitude: this.props.region_latitude,
+      longitude: this.props.region_longitude
+    }
+
     return(
       <View style={{paddingTop: this.props.statusBarHeight, flex:1}}> 
 
@@ -206,9 +231,21 @@ const longitudeDelta = ASPECT_RATIO * latitudeDelta;
         >
           {this._renderCasa(coordVigia.latitude, coordVigia.longitude) }
           
+          <MapViewDirections
+            origin="-23.5271216, -46.7261788"
+            destination="-23.5291216, -46.7231788"
+            apikey='AIzaSyCCvLwYKMDVy2u6CqJl9zAdGOYpsvuVngM'
+            strokeWidth={3}
+            strokeColor="hotpink"
+            // onReady={(result) => {
+            //       atualizaRota()              
+            //    }
+            // }
+
+
+          />
           
-        
-          
+          {this._renderRotaVigia(coordVigia.latitude, coordVigia.longitude)}
 
           
         </MapView>

@@ -20,7 +20,6 @@ import b64 from 'base-64';
 import _ from 'lodash';
 
 export const atualizaRota = (results, rota) => {
-    console.log('28')
     return(dispatch) => {
         if (rota === 'morador') {
             dispatch({
@@ -36,6 +35,7 @@ export const atualizaRota = (results, rota) => {
             })
         
         }
+        console.log(`sas`)
     }
 } 
 
@@ -146,19 +146,19 @@ export const getLocalizacaoCasa = () => {
     }
 }
 
-// export const confirmarPedido = () => {
-//     return dispatch => {
-//         const { currentUser } = firebase.auth();
-//         let emailUsuarioB64 = b64.encode(currentUser.email);
-//         firebase.database().ref(`/usuario_pedidos/${emailUsuarioB64}`)
-//             .push({
-//                     chegada_endereco: origem.name
-//                     chegada_latitude: origem.latitude,
-//                     chegada_longitude: origem.longitude,
+export const confirmarPedido = () => {
+    return dispatch => {
+        const { currentUser } = firebase.auth();
+        let emailUsuarioB64 = b64.encode(currentUser.email);
+        firebase.database().ref(`/usuario_pedidos/${emailUsuarioB64}`)
+            .push({
+                    chegada_endereco: origem.name,
+                    chegada_latitude: origem.latitude,
+                    chegada_longitude: origem.longitude,
                     
                     
 
-//             })
+            })
 
-//     }
-// }
+    }
+}
