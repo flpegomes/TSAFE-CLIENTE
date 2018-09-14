@@ -35,7 +35,7 @@ const longitudeDelta = ASPECT_RATIO * latitudeDelta;
         destination={`${this.props.origemEnderecoSelecionado.latitude}, ${this.props.origemEnderecoSelecionado.longitude}`}
         apikey='AIzaSyCCvLwYKMDVy2u6CqJl9zAdGOYpsvuVngM'
         strokeWidth={3}
-        strokeColor="hotpink"
+        strokeColor="#323232"
         // onReady={(result) => {
         //       atualizaRota()              
         //    }
@@ -43,6 +43,32 @@ const longitudeDelta = ASPECT_RATIO * latitudeDelta;
         
         onReady={(result) => {
           this.setState({ tempoVigia: result.duration})
+          
+        }}
+
+      />
+      )
+    }
+    return null
+          
+  }
+
+  _renderRotaMorador = (latitude, longitude) => {
+    if(!(this.props.origemEnderecoSelecionado === null)) {
+      return (
+        <MapViewDirections
+        origin={`${latitude}, ${longitude}`}
+        destination={`${this.props.origemEnderecoSelecionado.latitude}, ${this.props.origemEnderecoSelecionado.longitude}`}
+        apikey='AIzaSyCCvLwYKMDVy2u6CqJl9zAdGOYpsvuVngM'
+        strokeWidth={3}
+        strokeColor="#f9dc36"
+        // onReady={(result) => {
+        //       atualizaRota()              
+        //    }
+        // }
+        
+        onReady={(result) => {
+          this.setState({ tempoMorador: result.duration})
           
         }}
 
@@ -97,7 +123,8 @@ const longitudeDelta = ASPECT_RATIO * latitudeDelta;
         tipo:'m'
       }
     ],
-    tempoVigia: '0'
+    tempoVigia: '0',
+    tempoMorador: '0',
 
   }
 
@@ -230,23 +257,9 @@ const longitudeDelta = ASPECT_RATIO * latitudeDelta;
           showsPointsOfInterest={false}
           style={styles.mapView}
         >
-          {this._renderCasa(coordVigia.latitude, coordVigia.longitude) }
-          
-          <MapViewDirections
-            origin="-23.5271216, -46.7261788"
-            destination="-23.5291216, -46.7231788"
-            apikey='AIzaSyCCvLwYKMDVy2u6CqJl9zAdGOYpsvuVngM'
-            strokeWidth={3}
-            strokeColor="hotpink"
-            // onReady={(result) => {
-            //       atualizaRota()              
-            //    }
-            // }
-
-
-          />
-          
+          {this._renderCasa(coordVigia.latitude, coordVigia.longitude) }          
           {this._renderRotaVigia(coordVigia.latitude, coordVigia.longitude)}
+          {this._renderRotaMorador(this.props.region_latitude, this.props.region_longitude)}
 
           
         </MapView>
@@ -302,7 +315,7 @@ const longitudeDelta = ASPECT_RATIO * latitudeDelta;
             <View style={styles.confirmarContainer}>
               <View style={styles.tempoMoradorContainer}>
                 <Text style={{fontWeight: 'bold', fontSize:28, color:'#f9dc36'}}>-</Text>
-                <Text style={{fontWeight: 'bold', fontSize:14, color:'#323232'}}>{Math.round(this.state.tempoVigia) } min.</Text>
+                <Text style={{fontWeight: 'bold', fontSize:14, color:'#323232'}}>{Math.round(this.state.tempoMorador) } min.</Text>
               </View>
               
 
@@ -315,7 +328,7 @@ const longitudeDelta = ASPECT_RATIO * latitudeDelta;
 
               <View style={styles.tempoVigiaContainer}>
                 <Text style={{fontWeight: 'bold', fontSize:28, color:'#323232'}}>-</Text>
-                <Text style={{fontWeight: 'bold', fontSize:14, color:'#323232'}}>{Math.round(this.props.tempoRotaVigia)} min.</Text>
+                <Text style={{fontWeight: 'bold', fontSize:14, color:'#323232'}}>{Math.round(this.state.tempoVigia)} min.</Text>
 
               </View>
             </View>
