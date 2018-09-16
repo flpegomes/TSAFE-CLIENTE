@@ -66,12 +66,15 @@ export const resultadoSearchBox = (texto) => {
     }
 }
 
-export const getEnderecoPredict = (texto) => {
+export const getEnderecoPredict = (texto, region_latitude, region_longitude) => {
     return(dispatch) => {
         let userInput = texto;
         RNGooglePlaces.getAutocompletePredictions(userInput,
             {
-                country:'BR'
+                country:'BR',
+                latitude: region_latitude,
+                longitude: region_longitude,
+                radius: 30
             }
         )
         .then((results) => {

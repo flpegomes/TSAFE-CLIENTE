@@ -137,7 +137,7 @@ const longitudeDelta = ASPECT_RATIO * latitudeDelta;
   componentWillReceiveProps(nextProps) {
     this.criaFonteDeDados(nextProps.enderecos);      
     if(!(this.props.origem === nextProps.origem)){
-      this.props.getEnderecoPredict(nextProps.origem);   
+      this.props.getEnderecoPredict(nextProps.origem, nextProps.region_latitude, nextProps.region_longitude);   
     }
 
     if(this.props.origemEnderecoSelecionado !== null) {

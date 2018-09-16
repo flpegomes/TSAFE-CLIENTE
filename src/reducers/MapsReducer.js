@@ -1,6 +1,6 @@
 const INITIAL_STATE = {
-    region_latitude: 0,
-    region_longitude: 0,
+    region_latitude: -23.55006116,
+    region_longitude: -46.633358,
     origem: '',
     destino: '',
     resultadoDestino: false,
