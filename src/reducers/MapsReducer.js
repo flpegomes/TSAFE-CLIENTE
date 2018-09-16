@@ -21,6 +21,7 @@ const INITIAL_STATE = {
     tempoRotaMorador: "00:00",
     tempoRotaVigia: "00:00",
     solicitado: false,
+
 };
 
 import { 
@@ -36,7 +37,8 @@ import {
         ATUALIZA_ROTA,
         ATUALIZA_ROTA_VIGIA,
         CONFIMAR_SOLICITACAO,
-        CANCELAR_SOLICITACAO
+        CANCELAR_SOLICITACAO,
+        ON_DRAG_LOCALIZACAO
 
     } from '../Actions/Types';
 
@@ -65,7 +67,7 @@ export default (state = INITIAL_STATE, action) => {
             return { ...state, distanciaMoradorCasa: action.payload}
         case GET_LOCALIZACAO_CASA:
             return { ...state, longitudeCasa: action.payload.longitude_casa, latitudeCasa : action.payload.latitude_casa}
-        case ATUALIZA_ROTA:
+        case ATUALIZA_ROTA:x
             console.log(action.payload)
             return { ...state, tempoRotaMorador: action.payload }
         case ATUALIZA_ROTA_VIGIA:
@@ -74,6 +76,8 @@ export default (state = INITIAL_STATE, action) => {
             return { ...state, solicitado: true}
         case CANCELAR_SOLICITACAO:
             return { ...state, solicitado: false}
+        case ON_DRAG_LOCALIZACAO:
+            return { ...state, origemEnderecoSelecionado: { latitude: action.payload.latitude, longitude: action.payload.longitude, }}
         default:
             return state;
     }

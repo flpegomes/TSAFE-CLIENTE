@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { View, Button, Text, StyleSheet, Dimensions, ScrollView, ListView, TouchableHighlight, Image } from 'react-native';
-import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
+import MapView, { PROVIDER_GOOGLE, AnimatedRegion, Animated } from 'react-native-maps';
 import { connect } from 'react-redux';
 import { InputGroup, Input, Icon, List, ListItem, Left, Body } from 'native-base';
 import MapViewDirections from 'react-native-maps-directions';
@@ -17,7 +17,8 @@ import {
         getLocalizacaoCasa,
         atualizaRota,
         confirmaSolicitacao,
-        cancelaSolicitacao } from '../Actions/MapsActions';
+        cancelaSolicitacao,
+        onDragEndLocalizacaoSelecionada } from '../Actions/MapsActions';
 
 
 
@@ -28,6 +29,13 @@ const longitudeDelta = ASPECT_RATIO * latitudeDelta;
 
 
  class Mapa extends Component {
+
+  _criaMark = (latitude, longitude) => {
+    this.props.coordMark = new AnimatedRegion ({
+      latitude,
+      longitude
+    })
+  }
 
   _renderBotao = (coordAtual) => {
 
@@ -79,7 +87,7 @@ const longitudeDelta = ASPECT_RATIO * latitudeDelta;
   }
 
   _renderRotaMorador = (latitude, longitude) => {
-    if(!(this.props.origemEnderecoSelecionado === null) && this.props.solicitado === true ) {
+    if(!(this.props.origemEnderecoSelecionado === null)) {
       return (
         <MapViewDirections
         origin={`${latitude}, ${longitude}`}
@@ -91,32 +99,64 @@ const longitudeDelta = ASPECT_RATIO * latitudeDelta;
         //       atualizaRota()              
         //    }
         // }
-        
         onReady={(result) => {
           this.setState({ tempoMorador: result.duration})
-          
         }}
 
       />
       )
     }
     return null
-          
   }
+
+  _renderMarkLocalizacaoSelecionada = () => {
+    if(!(this.props.origemEnderecoSelecionado === null)){
+      
+      return (
+        <MapView.Marker.Animated
+              title= 'Localização selecionada'
+              ref={marker => {this.marker = marker}}
+              description= 'vou chegar aqui!'
+              draggable
+              coordinate={{
+                latitude: this.props.origemEnderecoSelecionado.latitude,
+                longitude: this.props.origemEnderecoSelecionado.longitude,
+              }}
+              showsCalloutOnLoad
+              onDragEnd={(e) => {
+                this.props.onDragEndLocalizacaoSelecionada(e.nativeEvent.coordinate.latitude, e.nativeEvent.coordinate.longitude)
+                this._criaMark(e.nativeEvent.coordinate.latitude, e.nativeEvent.coordinate.longitude)
+              }}        
+        />
+        
+      )
+    }
+  } 
+
+
   componentWillReceiveProps(nextProps) {
     this.criaFonteDeDados(nextProps.enderecos);      
     if(!(this.props.origem === nextProps.origem)){
       this.props.getEnderecoPredict(nextProps.origem);   
     }
-    if(!(this.props.destino === nextProps.destino)){
-      this.props.getEnderecoPredict(nextProps.destino);   
+
+    if(this.props.origemEnderecoSelecionado !== null) {
+      if(this.props.origemEnderecoSelecionado.latitude !== nextProps.origemEnderecoSelecionado.latitude) {
+        const coord = {
+          latitude: nextProps.origemEnderecoSelecionado.latitude,
+          longitude: nextProps.origemEnderecoSelecionado.longitude
+        }
+
+        this.marker._component.animateMarkerToCoordinate(
+          coord,
+          500
+        )
+      }
     }
 
     console.log(this.props);
    
   }
-
-
 
   state = {
     places: [
@@ -150,7 +190,12 @@ const longitudeDelta = ASPECT_RATIO * latitudeDelta;
     ],
     tempoVigia: '0',
     tempoMorador: '0',
-    confirmaSolicitacao: false
+    confirmaSolicitacao: false,
+    coordMark: {
+      latitude: 0,
+      longitude: 0
+    }
+
 
   }
 
@@ -199,17 +244,13 @@ const longitudeDelta = ASPECT_RATIO * latitudeDelta;
     this.fonteDeDados = ds.cloneWithRows(enderecos);
   }
 
-  _enderecoSelecionado(placeID, resultadoOrigem, origem, destino) {
+  _enderecoSelecionado(placeID, resultadoOrigem, origem) {
     this.props.getEnderecoSelecionado(placeID, 
                                       resultadoOrigem, 
                                       origem,
-                                      destino
                                     );        
   }
 
-  _calcularDistancia(origem, destino) {
-    this.props.calculaDistancia(origem, destino);
-  }
 
   _mapReady = () => {
     setTimeout(() => {
@@ -234,7 +275,6 @@ const longitudeDelta = ASPECT_RATIO * latitudeDelta;
                       onPress={() => this._enderecoSelecionado(data.placeID, 
                                                                this.props.resultadoOrigem,
                                                                this.props.origemEnderecoSelecionado,
-                                                               this.props.destinoEnderecoSelecionado
                                                             )}
                     >
                       <Left>
@@ -286,6 +326,7 @@ const longitudeDelta = ASPECT_RATIO * latitudeDelta;
           {this._renderCasa(coordVigia.latitude, coordVigia.longitude) }          
           {this._renderRotaVigia(coordVigia.latitude, coordVigia.longitude)}
           {this._renderRotaMorador(this.props.region_latitude, this.props.region_longitude)}
+          {this._renderMarkLocalizacaoSelecionada()}
 
           
         </MapView>
@@ -323,7 +364,7 @@ const longitudeDelta = ASPECT_RATIO * latitudeDelta;
             
         <View style={styles.searchBox}>
                 <View style={styles.inputWrapper}>
-                    <Text style={styles.label}>Localização de chegada:</Text>
+                    <Text style={styles.label}>Em que lugar irá chegar?</Text>
                     <InputGroup>
                         <Icon name="search" size={15} style={styles.iconSearch} type='FontAwesome' />
                         <Input style={styles.inputSearch} 
@@ -503,11 +544,9 @@ const mapStateToProps = state => (
   {
     
       origemEnderecoSelecionado: state.MapsReducer.origemEnderecoSelecionado,
-      destinoEnderecoSelecionado: state.MapsReducer.destinoEnderecoSelecionado,
       region_latitude: state.MapsReducer.region_latitude,
       region_longitude: state.MapsReducer.region_longitude,
       origem: state.MapsReducer.origem,
-      destino: state.MapsReducer.destino,
       resultadoOrigem: state.MapsReducer.resultadoOrigem,
       resultadoDestino: state.MapsReducer.resultadoDestino,
       latitudeCasa: state.MapsReducer.latitudeCasa,
@@ -516,6 +555,7 @@ const mapStateToProps = state => (
       distanciaMoradorCasa: state.MapsReducer.distanciaMoradorCasa,
       tempoRotaMorador: state.MapsReducer.tempoRotaMorador,
       tempoRotaVigia: state.MapsReducer.tempoRotaVigia,
+      region: state.MapsReducer.region,
       solicitado: state.MapsReducer.solicitado,
       enderecos: _.map(state.MapsReducer.enderecos, (val, uid) => {
         return { ...val, uid}
@@ -533,4 +573,5 @@ export default connect(mapStateToProps, {
                                           getLocalizacaoCasa,
                                           atualizaRota,
                                           confirmaSolicitacao,
-                                          cancelaSolicitacao })(Mapa);
+                                          cancelaSolicitacao,
+                                          onDragEndLocalizacaoSelecionada })(Mapa);

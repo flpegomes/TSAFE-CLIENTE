@@ -11,7 +11,8 @@ import {
         ATUALIZA_ROTA,
         ATUALIZA_ROTA_VIGIA,
         CONFIMAR_SOLICITACAO,
-        CANCELAR_SOLICITACAO
+        CANCELAR_SOLICITACAO,
+        ON_DRAG_LOCALIZACAO
     } from './Types';
 
 import { Actions } from 'react-native-router-flux';
@@ -158,5 +159,17 @@ export const confirmaSolicitacao = (chegada, origem ) => {
 export const cancelaSolicitacao = () => {
     return {
         type: CANCELAR_SOLICITACAO
+    }
+}
+
+export const onDragEndLocalizacaoSelecionada = (latitude, longitude) => {
+    const coordChegada = {
+        latitude: latitude,
+        longitude: longitude,
+    }
+
+    return {
+        type: ON_DRAG_LOCALIZACAO,
+        payload: coordChegada
     }
 }
