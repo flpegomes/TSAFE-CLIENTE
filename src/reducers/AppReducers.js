@@ -4,6 +4,7 @@ const INITIAL_STATE = {
     adicionar_contato_erro: '',
     mensagem:'',
     scroll: 'N',
+    tab: 0,
 };
 
 import {
@@ -13,7 +14,8 @@ import {
     ADICIONAR_CONTATO_ERRO,
     ADICIONAR_CONTATO_SUCESSO,
     MODIFICA_MENSAGEM,
-    ENVIA_MENSAGEM_SUCESSO
+    ENVIA_MENSAGEM_SUCESSO,
+    ATUALIZA_TAB
 } from '../Actions/Types';
 
 export default (state = INITIAL_STATE, action) => {
@@ -32,6 +34,8 @@ export default (state = INITIAL_STATE, action) => {
             return { ...state, mensagem: action.payload, scroll: 'N' }
         case ENVIA_MENSAGEM_SUCESSO:
             return { ...state, mensagem: '', scroll: 'S' }
+        case ATUALIZA_TAB:
+            return { ...state, tab: action.payload }
 
         default:
             return state;

@@ -13,7 +13,8 @@ import {
     MODIFICA_MENSAGEM,
     LISTA_CONVERSA_USUARIO,
     ENVIA_MENSAGEM_SUCESSO,
-    LISTA_CONVERSAS_USUARIO
+    LISTA_CONVERSAS_USUARIO,
+    ATUALIZA_TAB
 } from './Types';
 
 
@@ -178,3 +179,9 @@ export const conversasUsuarioFetch = () => {
 }
 
 
+export const selecionaTab = (tab) => {
+    return {
+        type: ATUALIZA_TAB,
+        payload: tab
+    }
+}

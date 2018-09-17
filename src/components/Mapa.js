@@ -20,6 +20,11 @@ import {
         cancelaSolicitacao,
         onDragEndLocalizacaoSelecionada } from '../Actions/MapsActions';
 
+import {
+      adicionaContato,
+      selecionaTab
+} from '../Actions/AppActions'
+
 
 
 const { height, width } = Dimensions.get('window');
@@ -35,6 +40,11 @@ const longitudeDelta = ASPECT_RATIO * latitudeDelta;
       latitude,
       longitude
     })
+  }
+
+  _chatVigia = () => {
+    this.props.adicionaContato('felipe1@tsafe.com.br');
+    this.props.selecionaTab(3);
   }
 
   _renderBotao = (coordAtual) => {
@@ -116,7 +126,8 @@ const longitudeDelta = ASPECT_RATIO * latitudeDelta;
         <MapView.Marker.Animated
               title= 'Localização selecionada'
               ref={marker => {this.marker = marker}}
-              description= 'vou chegar aqui!'
+              description= 'Clique para falar com o vigia.'
+              image={require('../Images/mark_solicitacao.png')}
               draggable
               coordinate={{
                 latitude: this.props.origemEnderecoSelecionado.latitude,
@@ -127,6 +138,8 @@ const longitudeDelta = ASPECT_RATIO * latitudeDelta;
                 this.props.onDragEndLocalizacaoSelecionada(e.nativeEvent.coordinate.latitude, e.nativeEvent.coordinate.longitude)
                 this._criaMark(e.nativeEvent.coordinate.latitude, e.nativeEvent.coordinate.longitude)
               }}        
+              onPress={() => {console.log('abrir chat')}}
+              onCalloutPress={() => this._chatVigia() }
         />
         
       )
@@ -227,6 +240,7 @@ const longitudeDelta = ASPECT_RATIO * latitudeDelta;
               title= 'Vigia'
               ref="a"
               description= 'Vigia Roger'
+              image={require('../Images/mark_vigia.png')}
               draggable
               coordinate={{
                 latitude: coordVigiaLatitude,
@@ -574,4 +588,6 @@ export default connect(mapStateToProps, {
                                           atualizaRota,
                                           confirmaSolicitacao,
                                           cancelaSolicitacao,
-                                          onDragEndLocalizacaoSelecionada })(Mapa);
+                                          onDragEndLocalizacaoSelecionada,
+                                          adicionaContato,
+                                          selecionaTab })(Mapa);

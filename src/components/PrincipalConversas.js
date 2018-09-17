@@ -8,9 +8,6 @@ import { Container, Header, Left, Right, Body, Title, Button, Icon, View, Fab, L
 import { Image, StyleSheet } from 'react-native';
 
 
-  
-
-
 
 
 
@@ -21,11 +18,11 @@ const PrincipalConversas = () => (
   <Container>
     <View style={styles.container}>
     <Tabs tabBarPosition='top'>
-      <Tab heading={<TabHeading style={styles.tabHeading} ><Icon style={styles.icon} type="FontAwesome" name="comments" /></TabHeading>}>
-        <Conversas />
-      </Tab>
       <Tab heading={<TabHeading style={styles.tabHeading} ><Icon style={styles.icon} type="FontAwesome" name="address-book-o" /></TabHeading>}>
         <Contatos />
+      </Tab>
+      <Tab heading={<TabHeading style={styles.tabHeading} ><Icon style={styles.icon} type="FontAwesome" name="comments" /></TabHeading>}>
+        <Conversas />
       </Tab>
     </Tabs>
     </View>
