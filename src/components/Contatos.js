@@ -56,9 +56,9 @@ class Contatos extends Component {
                             <Text>{data.nome}</Text>
                             <Text note>{data.email}</Text>
                         </Body>
-                        <Right>
+                        {/* <Right>
                             <Text note>11:44</Text>
-                        </Right>
+                        </Right>*/}
                     </ListItem>
             )}
           />

@@ -37,7 +37,11 @@ export const modificaContato = (texto) => {
 } 
 
 export const adicionaContato = email => {
-
+    if(email===''){
+        return dispatch => {
+            adicionaContatoErro('Preencha o campo!', dispatch);
+        }
+    }
     return dispatch => {
         let emailb64 = b64.encode(email);
         firebase.database().ref(`/usuarios/${emailb64}`)
@@ -48,10 +52,18 @@ export const adicionaContato = email => {
                const { currentUser } = firebase.auth();
                let emailUsuarioB64 = b64.encode(currentUser.email);
 
-               firebase.database().ref(`/usuario_contatos/${emailUsuarioB64}`)
+               firebase.database().ref(`usuario_contatos/${emailUsuarioB64}`).orderByKey().once('value', (snapshot) => {
+                if (snapshot.exists()) {
+                    adicionaContatoErro('Contato já existente.', dispatch);
+                } else {
+                    firebase.database().ref(`/usuario_contatos/${emailUsuarioB64}`)
                     .push({ email, nome: dadosUsuario.nome })
-                    .then(() => adicionaContatoSucesso())
+                    .then(() => adicionaContatoSucesso('Contato adicionado.', dispatch))
                     .catch(erro => adicionaContatoErro(erro.message, dispatch))
+                }
+              }).catch()
+
+               
             } else {
                 dispatch({ 
                            type: ADICIONAR_CONTATO_ERRO, 
@@ -72,9 +84,10 @@ const adicionaContatoErro = (erro, dispatch) => (
      })
 )
 
-const adicionaContatoSucesso = () => {
+const adicionaContatoSucesso = (sucesso, dispatch) => {
     dispatch({
         type: ADICIONAR_CONTATO_SUCESSO,
+        payload: sucesso
     })
 }
 

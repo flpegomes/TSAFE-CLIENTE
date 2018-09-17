@@ -21,13 +21,13 @@ export default (state = INITIAL_STATE, action) => {
         case MODAL_VISIBLE:
             return { ...state, modalVisible: true }
         case MODAL_INVISIBLE: 
-            return { ...state, modalVisible: false }
+            return { ...state, modalVisible: false, adicionar_contato: '', adicionar_contato_erro: '' }
         case MODIFICA_CONTATO: 
             return { ...state, adicionar_contato: action.payload }
         case ADICIONAR_CONTATO_ERRO:
             return { ...state, adicionar_contato_erro: action.payload }
         case ADICIONAR_CONTATO_SUCESSO:
-            return { ...state, adicionar_contato: '' } 
+            return { ...state, adicionar_contato: '', adicionar_contato_erro: action.payload } 
         case MODIFICA_MENSAGEM:
             return { ...state, mensagem: action.payload, scroll: 'N' }
         case ENVIA_MENSAGEM_SUCESSO:
