@@ -50,7 +50,7 @@ class Contatos extends Component {
             renderRow={data => ( 
                     <ListItem avatar onPress={ () => Actions.Chat({ title:`${data.nome}`, contatoNome: data.nome, contatoEmail: data.email}) }>
                         <Left>
-                            <Thumbnail source={{ uri: 'https://scontent.fsdu17-1.fna.fbcdn.net/v/t1.0-9/35328319_1747624545331318_1003134133611790336_n.jpg?_nc_cat=0&_nc_eui2=AeHhXiNy-hetBDdi8L33WMw-0mxNp0y8tG6QKoH8oKiDvyKrGjKm3TbSlpQKrvLqF5cBlB34DAdSmm80UnMvmhvJFnHrXLa2-f6IMyKPscnlIA&oh=2733e5dc65292b22b2f9d7d573529f63&oe=5C057EE9'}} />
+                            <Thumbnail source={{ uri: 'https://growthfoundation.in/wp-content/uploads/2013/08/Facebook-no-profile-picture-icon-620x389.jpg'}} />
                         </Left>
                         <Body>
                             <Text>{data.nome}</Text>
