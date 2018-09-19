@@ -52,7 +52,7 @@ const longitudeDelta = ASPECT_RATIO * latitudeDelta;
     if(this.props.solicitado === false ) {
       return (
         <TouchableHighlight 
-                    onPress={() => this.props.confirmaSolicitacao(this.props.origemEnderecoSelecionado, coordAtual)}
+                    onPress={() => this.props.confirmaSolicitacao(this.props.origemEnderecoSelecionado, coordAtual, this.state.tempoMorador, this.state.tempoVigia)}
                     style={styles.btnConfirmar} 
                   >
                       <Text style={styles.txtConfirmar} >CONFIRMAR SOLICITAÇÃO</Text>
@@ -482,7 +482,8 @@ const styles = StyleSheet.create({
       backgroundColor: '#fff',
       opacity: 0.9,
       borderRadius: 7,
-      elevation: 5
+      elevation: 5,
+      maxHeight: 200,
     },
     primaryText: {
         fontWeight: 'bold',

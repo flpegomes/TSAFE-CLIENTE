@@ -140,7 +140,7 @@ export const getLocalizacaoCasa = () => {
     }
 }
 
-export const confirmaSolicitacao = (chegada, origem ) => {
+export const confirmaSolicitacao = (chegada, origem, tempoMorador, tempoVigia ) => {
     return dispatch => {
         const { currentUser } = firebase.auth();
         let emailUsuarioB64 = b64.encode(currentUser.email);
@@ -151,6 +151,8 @@ export const confirmaSolicitacao = (chegada, origem ) => {
                     chegada_longitude: chegada.longitude,
                     origem_latide: origem.latitude,
                     origem_longitude: origem.longitude,
+                    tempoMorador: tempoMorador,
+                    tempoVigia: tempoVigia
             })
             .then(
                 dispatch({ type: CONFIMAR_SOLICITACAO })

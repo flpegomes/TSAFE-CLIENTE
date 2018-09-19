@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
         top: 160,
         position: 'absolute',
         width: '100%',
-        height:1000,
+        height:100,
         backgroundColor: '#fff',
         opacity: 0.9
     },
