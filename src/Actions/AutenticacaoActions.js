@@ -2,7 +2,7 @@ import firebase from 'firebase';
 import { Actions } from 'react-native-router-flux';
 import b64 from 'base-64';
 import RNGooglePlaces from 'react-native-google-places';
-
+import fogo from 'react-native-firebase';
 
 import {
         MODIFICA_EMAIL,
@@ -90,12 +90,20 @@ const cadastroUsuarioErro = (erro, dispatch) => {
 export const autenticarUsuario = ({email, senha}) => {
     
     return dispatch => {
-
+        fogo.messaging().requestPermission()
+        .then(() => {
+          // User has authorised  
+        })
+        .catch(error => {
+          // User has rejected permissions  
+        });
+      
+      
         dispatch({type: LOADING_LOGIN})
-
         firebase.auth().signInWithEmailAndPassword(email, senha)
             .then(value => loginUsuarioSucesso(dispatch))
             .catch(erro => loginUsuarioErro(dispatch, erro));
+        console.log(firebase);
     }
 }
 

@@ -14,6 +14,7 @@
     "native-base": "^2.8.0",
     "react": "16.3.1",
     "react-native": "0.55.4",
+    "react-native-firebase": "^4.3.8",
     "react-native-google-places": "^2.5.2",
     "react-native-maps": "^0.21.0",
     "react-native-maps-directions": "^1.6.0",

@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "791072086116",
+    "firebase_url": "https://tsafe-f0c90.firebaseio.com",
+    "project_id": "tsafe-f0c90",
+    "storage_bucket": "tsafe-f0c90.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:791072086116:android:8d9492509004b159",
+        "android_client_info": {
+          "package_name": "com.tsafe_cliente"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "791072086116-n9cnpsd9nqsama210flc4rn5jk8ltbqa.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyADdo1001Arb2COHVNMXFO8yYOB0C8gj14"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
