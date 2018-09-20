@@ -89,20 +89,22 @@ const cadastroUsuarioErro = (erro, dispatch) => {
 
 export const autenticarUsuario = ({email, senha}) => {
     
-    return dispatch => {
-        fogo.messaging().requestPermission()
-        .then(() => {
-          // User has authorised  
-        })
-        .catch(error => {
-          // User has rejected permissions  
-        });
-      
+    return dispatch => {      
       
         dispatch({type: LOADING_LOGIN})
         firebase.auth().signInWithEmailAndPassword(email, senha)
             .then(value => loginUsuarioSucesso(dispatch))
             .catch(erro => loginUsuarioErro(dispatch, erro));
+        FCM = fogo.messaging();
+        FCM.requestPermission();
+        FCM.getToken().then(token => {
+
+            // stores the token in the user's document
+            //this.ref.doc(user.uid).update({ pushToken: token });
+            firebase.database().ref(`/token`)
+                .push({ pushToken: token })
+                .then(console.log(token))
+        });
         console.log(firebase);
     }
 }
