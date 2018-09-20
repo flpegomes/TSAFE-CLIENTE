@@ -4,6 +4,27 @@ const admin     = require("firebase-admin");
 // initializes your application
 admin.initializeApp(functions.config().firebase);
 
+exports.sendPushNotification = functions.database.ref('/usuario_pedidos/{email64}/{id}/{conteudo}')
+.onCreate((snapshot, context) => {
+
+    //atenção: context traz as variaveis da query que estao entre chaves{}
+    return admin.database().ref(`/usuarios/${context.params.email64}`)
+    .once('value')
+    .then(snapshot => {
+        const dadosUser = snapshot.val();
+
+        let payload = {
+            notification: {
+                title: "teste com usuario",
+                body: "Mais um"
+            }
+        }
+
+        return admin.messaging().sendToDevice(dadosUser.pushToken, payload);
+    }).catch();
+});
+
+/* exemplo: pega token e manda pushNotification
 exports.sendPushNotification = functions.database.ref('/token/{pushId}/{conteudo}')
 .onCreate((snapshot, context) => {
   // Grab the current value of what was written to the Realtime Database.
@@ -16,6 +37,7 @@ exports.sendPushNotification = functions.database.ref('/token/{pushId}/{conteudo
   }
   return admin.messaging().sendToDevice(pushToken, payload);
 });
+*/
 
 /* pega o token e da uppercase criando um atributo no mesmo nivel com o titulo de uppercase
 exports.makeUppercase = functions.database.ref('/token/{pushId}/{conteudo}')
