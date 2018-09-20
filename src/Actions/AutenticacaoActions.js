@@ -2,7 +2,7 @@ import firebase from 'firebase';
 import { Actions } from 'react-native-router-flux';
 import b64 from 'base-64';
 import RNGooglePlaces from 'react-native-google-places';
-
+import fogo from 'react-native-firebase';
 
 import {
         MODIFICA_EMAIL,
@@ -89,13 +89,23 @@ const cadastroUsuarioErro = (erro, dispatch) => {
 
 export const autenticarUsuario = ({email, senha}) => {
     
-    return dispatch => {
-
+    return dispatch => {      
+      
         dispatch({type: LOADING_LOGIN})
-
         firebase.auth().signInWithEmailAndPassword(email, senha)
             .then(value => loginUsuarioSucesso(dispatch))
             .catch(erro => loginUsuarioErro(dispatch, erro));
+        FCM = fogo.messaging();
+        FCM.requestPermission();
+        FCM.getToken().then(token => {
+
+            // stores the token in the user's document
+            //this.ref.doc(user.uid).update({ pushToken: token });
+            firebase.database().ref(`/token`)
+                .push({ pushToken: token })
+                .then(console.log(token))
+        });
+        console.log(firebase);
     }
 }
 
