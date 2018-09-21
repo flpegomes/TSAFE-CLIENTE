@@ -101,7 +101,8 @@ export const autenticarUsuario = ({email, senha}) => {
 
             // stores the token in the user's document
             //this.ref.doc(user.uid).update({ pushToken: token });
-            firebase.database().ref(`/token`)
+            let emailB64 = b64.encode(email)
+            firebase.database().ref(`/usuarios/${emailB64}`)
                 .push({ pushToken: token })
                 .then(console.log(token))
         });

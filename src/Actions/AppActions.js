@@ -178,7 +178,6 @@ export const conversasUsuarioFetch = () => {
     }
 }
 
-
 export const selecionaTab = (tab) => {
     return {
         type: ATUALIZA_TAB,
