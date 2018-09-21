@@ -4,6 +4,19 @@ const admin     = require("firebase-admin");
 // initializes your application
 admin.initializeApp(functions.config().firebase);
 
+exports.sendPushNotificationBruno = functions.database.ref('/mensagens/{emailE}/{emailR}/{pushId}')
+.onCreate((snapshot, context) => {
+
+       return admin.database().ref().child("usuarios").child(context.params.emailE).child("pushToken")
+       .once("value", snapshot2 => {
+           const pushToken = snapshot2.val();
+           console.log(pushToken);
+           return pushToken;
+       })
+});
+
+
+
 // exports.sendPushNotification = functions.database.ref('/usuario_pedidos/{email64}/{id}/{conteudo}')
 // .onCreate((snapshot, context) => {
 
@@ -24,6 +37,8 @@ admin.initializeApp(functions.config().firebase);
 //     }).catch();
 // });
 
+
+/*
 //exemplo: pega token e manda pushNotification
 exports.sendPushNotification = functions.database.ref('/mensagens/{emailE}/{emailR}/{pushId}/')
 .onCreate((snapshot, context) => {
@@ -59,7 +74,7 @@ exports.sendPushNotification = functions.database.ref('/mensagens/{emailE}/{emai
        .catch(error => {
            console.log(`deu erro : ${error}`)
        });
-});
+});*/
 
 
 /* pega o token e da uppercase criando um atributo no mesmo nivel com o titulo de uppercase
