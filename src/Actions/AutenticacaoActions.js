@@ -102,9 +102,15 @@ export const autenticarUsuario = ({email, senha}) => {
             // stores the token in the user's document
             //this.ref.doc(user.uid).update({ pushToken: token });
             let emailB64 = b64.encode(email)
-            firebase.database().ref(`/usuarios/${emailB64}`)
-                .push({ pushToken: token })
-                .then(console.log(token))
+            return firebase.database().ref().child(`/usuarios`).child(emailB64)
+            .once('value')
+            .then(function(snapshot) {
+                snapshot.forEach(function(childSnapshot) {
+                    firebase.database().ref(`/usuarios/${emailB64}/${childSnapshot.key}`)                
+                    .update({ pushToken: token })
+                    .then(console.log(token))
+                })
+            })
         });
         console.log(firebase);
     }
