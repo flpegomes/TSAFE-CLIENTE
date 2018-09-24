@@ -7,7 +7,7 @@ admin.initializeApp(functions.config().firebase);
 //exemplo: pega token e manda pushNotification
 exports.sendPushNotification = functions.database.ref('/mensagens/{emailE}/{emailR}/{pushId}/')
 .onCreate((snapshot2, context) => {
-	console.log(`Entra na function:`);
+	//console.log(`Entra na function:`);
 	//retorna a promessa da database ref
 	return admin.database().ref(`/usuarios/${context.params.emailE}`)
 	.once('value')
@@ -25,6 +25,47 @@ exports.sendPushNotification = functions.database.ref('/mensagens/{emailE}/{emai
 				notification: {
 					title: "Nova mensagem",
 					body: `${snapshot2.val().mensagem}`
+				}
+			}
+			
+			//depois do database ref retornar, cria e da return na promessa
+			return admin.messaging().sendToDevice(pushToken, payload)
+			.then((response) => {
+				// console.log(`Messaging retorna:`);
+                // console.log(response);
+			})
+			.catch(error => {
+				// console.log(`deu erro : ${error}`)
+			});
+			
+		}
+	)})
+	.catch(erro => console.log(`erro: ${erro}`))
+});
+
+
+//exemplo: pega token e manda pushNotification
+exports.sendNotificationVigiaPedido = functions.database.ref('/vigia_pedidos/dmlnaWFyb2dlckB0c2FmZS5jb20uYnI=/{Id}/{values}')
+.onCreate((snapshot2, context) => {
+    console.log(`Entra na function:`);
+    console.log(`${context.params.values}`);
+	//retorna a promessa da database ref
+	return admin.database().ref(`/usuarios/dmlnaWFyb2dlckB0c2FmZS5jb20uYnI=`)
+	.once('value')
+	.then(function(snapshot) {
+		//percorre os nós
+		snapshot.forEach(function(childSnapshot) {
+			
+			//pega o token
+			const pushToken = childSnapshot.val().pushToken;
+			
+			// console.log(`Database retorna:`);
+			// console.log(pushToken);
+			console.log(snapshot2.val())
+			let payload = {
+				notification: {
+					title: "Novo pedido",
+					body: `Chega em ${Math.round(snapshot2.val().tempoMorador)} minutos`
 				}
 			}
 			
