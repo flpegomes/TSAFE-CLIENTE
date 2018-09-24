@@ -27,9 +27,14 @@ exports.sendPushNotification = functions.database.ref('/mensagens/{emailE}/{emai
 					body: `${snapshot2.val().mensagem}`
 				}
 			}
-			
+
+			let options = {
+				priority: 'high',
+				timeToLive: 60 * 60 * 24
+			};
+
 			//depois do database ref retornar, cria e da return na promessa
-			return admin.messaging().sendToDevice(pushToken, payload)
+			return admin.messaging().sendToDevice(pushToken, payload, options)
 			.then((response) => {
 				// console.log(`Messaging retorna:`);
                 // console.log(response);
@@ -68,9 +73,14 @@ exports.sendNotificationVigiaPedido = functions.database.ref('/vigia_pedidos/dml
 					body: `Chega em ${Math.round(snapshot2.val().tempoMorador)} minutos`
 				}
 			}
+
+			let options = {
+				priority: 'high',
+				timeToLive: 60 * 60 * 24
+			};
 			
 			//depois do database ref retornar, cria e da return na promessa
-			return admin.messaging().sendToDevice(pushToken, payload)
+			return admin.messaging().sendToDevice(pushToken, payload, options)
 			.then((response) => {
 				// console.log(`Messaging retorna:`);
                 // console.log(response);
