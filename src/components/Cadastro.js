@@ -40,12 +40,14 @@ class cadastro extends Component {
                 <ActivityIndicator size='large' />
             )        
         }
+        if(this.props.mostraListaEndereco !== true) {
+            return (
+                <TouchableOpacity style={styles.buttonContainer} onPress={() => this._cadastraUsuario()}>
+                            <Text style={styles.textButton}> CADASTRAR </Text>
+                </TouchableOpacity>
+            )
+        }
         
-        return (
-            <TouchableOpacity style={styles.buttonContainer} onPress={() => this._cadastraUsuario()}>
-                        <Text style={styles.textButton}> CADASTRAR </Text>
-            </TouchableOpacity>
-        )
     }
 
     _selecionaEnderecoLista(placeID) {
@@ -132,12 +134,13 @@ class cadastro extends Component {
                     />
                     <View style={styles.inputWrapper}>
                         <InputGroup>
-                            <Icon name="search" size={15} color="#FF5E3A" />
+                            <Icon name="search" size={15} color="#f9dc36" style={styles.searchIcon} />
                             <Input style={styles.inputSearch} 
                                 placeholder="A onde você mora?"
                                 onChangeText={texto => (this.props.modificaEndereco(texto))}
                                 onFocus={() => this.props.mostraListaEnderecos('casa')}
                                 value={this.props.endereco}
+                                placeholderTextColor='#999'
                                 /> 
                         </InputGroup>
                      </View>
@@ -170,7 +173,7 @@ const styles = StyleSheet.create({
     },
     buttonContainer: {
         backgroundColor: '#f9dc36',
-        borderRadius: 3,
+        borderRadius: 50,
         justifyContent: 'center',
         alignItems: 'center' ,
         height: 45
@@ -185,8 +188,8 @@ const styles = StyleSheet.create({
         height: 45,
         backgroundColor: '#444',
         marginTop: 10,
-        borderRadius: 3,
-        paddingHorizontal: 15,
+        borderRadius: 50,
+        paddingHorizontal: 25,
         color:'#fff'
     },
     msgErro: {
@@ -207,7 +210,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 15,
         marginTop:10,
         backgroundColor: '#444',
-        borderRadius: 3,
+        borderRadius: 50,
     },
     inputSearch: {
         fontSize: 14,
@@ -228,7 +231,7 @@ const styles = StyleSheet.create({
       opacity: 0.9,
       borderRadius: 7,
       elevation: 5,
-      maxHeight: 200,
+      maxHeight: 80,
     },
     primaryText: {
         fontWeight: 'bold',
@@ -244,8 +247,10 @@ const styles = StyleSheet.create({
         borderLeftColor: '#7D7D7D',
     },
     leftIcon: {
-        
-        color: '#7D7D7D',
+        color: '#f9dc36',
+    },
+    searchIcon: {
+        color: '#f9dc36',
     },
     
 });

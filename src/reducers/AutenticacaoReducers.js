@@ -1,8 +1,8 @@
 const INITIAL_STATE = {
-    nome: 'Felipe',
-    sobrenome: 'Gomes',
-    email: 'felipe2@tsafe.com.br', 
-    senha: '123456', 
+    nome: '',
+    sobrenome: '',
+    email: '', 
+    senha: '', 
     erroCadastro:'',
     erroLogin: '',
     loadingLogin: false,

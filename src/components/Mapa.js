@@ -43,7 +43,7 @@ const longitudeDelta = ASPECT_RATIO * latitudeDelta;
   }
 
   _chatVigia = () => {
-    this.props.adicionaContato('felipe1@tsafe.com.br');
+    this.props.adicionaContato('vigiaroger@tsafe.com.br');
     this.props.selecionaTab(3);
   }
 
@@ -234,8 +234,7 @@ const longitudeDelta = ASPECT_RATIO * latitudeDelta;
               }}
               showsCalloutOnLoad
           />
-          
-
+        
           <MapView.Marker
               title= 'Vigia'
               ref="a"
@@ -310,8 +309,8 @@ const longitudeDelta = ASPECT_RATIO * latitudeDelta;
   }
    render() {
     let coordVigia = {
-      latitude: -23.5271216, 
-      longitude: -46.7261788
+      latitude: -23.572811, 
+      longitude: -46.620285
     }
 
     let coordAtual = {
@@ -375,12 +374,27 @@ const longitudeDelta = ASPECT_RATIO * latitudeDelta;
                 </View>
             ))}            
         </ScrollView> */}
-            
-        <View style={styles.searchBox}>
+           
+
+            <View style={styles.searchBox}>
                 <View style={styles.inputWrapper}>
-                    <Text style={styles.label}>Em que lugar irá chegar?</Text>
+                    <Text style={styles.label}>Em que lugar você está agora?</Text>
                     <InputGroup>
                         <Icon name="search" size={15} style={styles.iconSearch} type='FontAwesome' />
+                        <Input style={styles.inputSearch} 
+                            placeholderTextColor='#999'
+                            placeholder="A onde você está?"
+                            onChangeText={texto => (this.props.modificaOrigem(texto))}
+                            onFocus={() => this.props.resultadoSearchBox('origem')}
+                            value={this.props.origem}
+                            /> 
+                    </InputGroup>
+                </View>
+            
+                <View style={styles.secondInputWrapper}>
+                    <Text style={styles.secondaryLabel}>Em que lugar irá chegar?</Text>
+                    <InputGroup>
+                        <Icon name="search" size={15} style={styles.secondaryIconSearch} type='FontAwesome' />
                         <Input style={styles.inputSearch} 
                             placeholderTextColor='#999'
                             placeholder="A onde você irá chegar?"
@@ -389,7 +403,7 @@ const longitudeDelta = ASPECT_RATIO * latitudeDelta;
                             value={this.props.origem}
                             /> 
                     </InputGroup>
-                </View>
+            </View>
             </View>
              
               <View style={styles.confirmarContainer}>
@@ -474,6 +488,14 @@ const styles = StyleSheet.create({
         color: '#f9dc36',
         fontWeight: 'bold',
     },
+    secondaryLabel: { 
+      fontSize: 10,
+      marginLeft: 10,
+      marginTop: 10,
+      marginBottom: 0,
+      color: '#323232',
+      fontWeight: 'bold',
+  },
     searchResultsWrapper: {
       bottom: 0,
       position: 'absolute',
@@ -524,6 +546,9 @@ const styles = StyleSheet.create({
     },
     iconSearch: {
       color: '#f9dc36',
+    },
+    secondaryIconSearch: {
+      color: '#323232',
     },
     confirmarContainer: {
       flexDirection: 'row',

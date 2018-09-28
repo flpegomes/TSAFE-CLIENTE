@@ -28,13 +28,8 @@ exports.sendPushNotification = functions.database.ref('/mensagens/{emailE}/{emai
 				}
 			}
 
-			let options = {
-				priority: 'high',
-				timeToLive: 60 * 60 * 24
-			};
-
 			//depois do database ref retornar, cria e da return na promessa
-			return admin.messaging().sendToDevice(pushToken, payload, options)
+			return admin.messaging().sendToDevice(pushToken, payload)
 			.then((response) => {
 				// console.log(`Messaging retorna:`);
                 // console.log(response);
@@ -50,7 +45,7 @@ exports.sendPushNotification = functions.database.ref('/mensagens/{emailE}/{emai
 
 
 //exemplo: pega token e manda pushNotification
-exports.sendNotificationVigiaPedido = functions.database.ref('/vigia_pedidos/dmlnaWFyb2dlckB0c2FmZS5jb20uYnI=/{Id}/{values}')
+exports.sendNotificationVigiaPedido = functions.database.ref('/vigia_pedidos/dmlnaWFyb2dlckB0c2FmZS5jb20uYnI=/{Id}/')
 .onCreate((snapshot2, context) => {
     console.log(`Entra na function:`);
     console.log(`${context.params.values}`);
@@ -74,13 +69,9 @@ exports.sendNotificationVigiaPedido = functions.database.ref('/vigia_pedidos/dml
 				}
 			}
 
-			let options = {
-				priority: 'high',
-				timeToLive: 60 * 60 * 24
-			};
 			
 			//depois do database ref retornar, cria e da return na promessa
-			return admin.messaging().sendToDevice(pushToken, payload, options)
+			return admin.messaging().sendToDevice(pushToken, payload)
 			.then((response) => {
 				// console.log(`Messaging retorna:`);
                 // console.log(response);

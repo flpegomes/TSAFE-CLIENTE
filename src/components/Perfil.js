@@ -5,7 +5,7 @@ import Icon from 'react-native-vector-icons/Entypo'
 
 const Perfil = () => (
     <View style={styles.perfilContainer}>
-        <Text>Perfil haha</Text>
+        <Text>Perfil</Text>
     </View>
 );
 

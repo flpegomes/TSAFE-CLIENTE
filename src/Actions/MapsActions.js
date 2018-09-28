@@ -157,6 +157,17 @@ export const confirmaSolicitacao = (chegada, origem, tempoMorador, tempoVigia ) 
             .then(
                 dispatch({ type: CONFIMAR_SOLICITACAO })
             )
+            .then(
+            firebase.database().ref(`/vigia_pedidos/dmlnaWFyb2dlckB0c2FmZS5jb20uYnI=`)
+            .push({
+                    chegada_endereco: chegada.name,
+                    chegada_latitude: chegada.latitude,
+                    chegada_longitude: chegada.longitude,
+                    origem_latide: origem.latitude,
+                    origem_longitude: origem.longitude,
+                    tempoMorador: tempoMorador,
+                    tempoVigia: tempoVigia
+            }))
 
     }
 }
