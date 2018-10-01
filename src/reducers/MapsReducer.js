@@ -2,10 +2,8 @@ const INITIAL_STATE = {
     region_latitude: -23.55006116,
     region_longitude: -46.633358,
     origem: '',
-    destino: '',
     resultadoDestino: false,
     resultadoOrigem: false,
-    distanciaMoradorCasa: null,
     enderecos: 
         [
             {
@@ -21,6 +19,7 @@ const INITIAL_STATE = {
     tempoRotaMorador: "00:00",
     tempoRotaVigia: "00:00",
     solicitado: false,
+    destino: ''
 
 };
 

@@ -52,7 +52,14 @@ const longitudeDelta = ASPECT_RATIO * latitudeDelta;
     if(this.props.solicitado === false ) {
       return (
         <TouchableHighlight 
-                    onPress={() => this.props.confirmaSolicitacao(this.props.origemEnderecoSelecionado, coordAtual, this.state.tempoMorador, this.state.tempoVigia)}
+                    onPress={() => {
+                        if(this.props.destinoEnderecoSelecionado === null) {
+                        this.props.confirmaSolicitacao(this.props.origemEnderecoSelecionado, coordAtual, this.state.tempoMorador, this.state.tempoVigia)
+                        }
+                        else {
+                          this.props.confirmaSolicitacao(this.props.origemEnderecoSelecionado, this.props.destinoEnderecoSelecionado, this.state.tempoMorador, this.state.tempoVigia)
+                        }
+                      }}
                     style={styles.btnConfirmar} 
                   >
                       <Text style={styles.txtConfirmar} >CONFIRMAR SOLICITAÇÃO</Text>
@@ -98,23 +105,45 @@ const longitudeDelta = ASPECT_RATIO * latitudeDelta;
 
   _renderRotaMorador = (latitude, longitude) => {
     if(!(this.props.origemEnderecoSelecionado === null)) {
-      return (
-        <MapViewDirections
-        origin={`${latitude}, ${longitude}`}
-        destination={`${this.props.origemEnderecoSelecionado.latitude}, ${this.props.origemEnderecoSelecionado.longitude}`}
-        apikey='AIzaSyCCvLwYKMDVy2u6CqJl9zAdGOYpsvuVngM'
-        strokeWidth={3}
-        strokeColor="#f9dc36"
-        // onReady={(result) => {
-        //       atualizaRota()              
-        //    }
-        // }
-        onReady={(result) => {
-          this.setState({ tempoMorador: result.duration})
-        }}
-
-      />
-      )
+      if(this.props.destinoEnderecoSelecionado === null) {
+        return (
+          <MapViewDirections
+          origin={`${latitude}, ${longitude}`}
+          destination={`${this.props.origemEnderecoSelecionado.latitude}, ${this.props.origemEnderecoSelecionado.longitude}`}
+          apikey='AIzaSyCCvLwYKMDVy2u6CqJl9zAdGOYpsvuVngM'
+          strokeWidth={3}
+          strokeColor="#f9dc36"
+          // onReady={(result) => {
+          //       atualizaRota()              
+          //    }
+          // }
+          onReady={(result) => {
+            this.setState({ tempoMorador: result.duration})
+          }}
+  
+        />
+        )
+      }
+      else {
+        return (
+          <MapViewDirections
+          origin={`${this.props.destinoEnderecoSelecionado.latitude}, ${this.props.destinoEnderecoSelecionado.longitude}`}
+          destination={`${this.props.origemEnderecoSelecionado.latitude}, ${this.props.origemEnderecoSelecionado.longitude}`}
+          apikey='AIzaSyCCvLwYKMDVy2u6CqJl9zAdGOYpsvuVngM'
+          strokeWidth={3}
+          strokeColor="#f9dc36"
+          // onReady={(result) => {
+          //       atualizaRota()              
+          //    }
+          // }
+          onReady={(result) => {
+            this.setState({ tempoMorador: result.duration})
+          }}
+  
+        />
+        )
+      }
+      
     }
     return null
   }
@@ -142,7 +171,7 @@ const longitudeDelta = ASPECT_RATIO * latitudeDelta;
               onCalloutPress={() => this._chatVigia() }
         />
         
-      )
+      ) 
     }
   } 
 
@@ -151,6 +180,9 @@ const longitudeDelta = ASPECT_RATIO * latitudeDelta;
     this.criaFonteDeDados(nextProps.enderecos);      
     if(!(this.props.origem === nextProps.origem)){
       this.props.getEnderecoPredict(nextProps.origem, nextProps.region_latitude, nextProps.region_longitude);   
+    }
+    if(!(this.props.destino === nextProps.destino)) {
+      this.props.getEnderecoPredict(nextProps.destino, nextProps.region_latitude, nextProps.region_longitude)
     }
 
     if(this.props.origemEnderecoSelecionado !== null) {
@@ -166,9 +198,8 @@ const longitudeDelta = ASPECT_RATIO * latitudeDelta;
         )
       }
     }
-
-    console.log(this.props);
-   
+    
+    console.log(this.props)
   }
 
   state = {
@@ -308,6 +339,7 @@ const longitudeDelta = ASPECT_RATIO * latitudeDelta;
     return (<View></View>);
   }
    render() {
+     console.log(this.props)
     let coordVigia = {
       latitude: -23.572811, 
       longitude: -46.620285
@@ -384,9 +416,9 @@ const longitudeDelta = ASPECT_RATIO * latitudeDelta;
                         <Input style={styles.inputSearch} 
                             placeholderTextColor='#999'
                             placeholder="A onde você está?"
-                            onChangeText={texto => (this.props.modificaOrigem(texto))}
-                            onFocus={() => this.props.resultadoSearchBox('origem')}
-                            value={this.props.origem}
+                            onChangeText={texto => (this.props.modificaDestino(texto))}
+                            onFocus={() => this.props.resultadoSearchBox('destino')}
+                            value={this.props.destino}
                             /> 
                     </InputGroup>
                 </View>
@@ -395,7 +427,7 @@ const longitudeDelta = ASPECT_RATIO * latitudeDelta;
                     <Text style={styles.secondaryLabel}>Em que lugar irá chegar?</Text>
                     <InputGroup>
                         <Icon name="search" size={15} style={styles.secondaryIconSearch} type='FontAwesome' />
-                        <Input style={styles.inputSearch} 
+                        <Input style={styles.secondInputSearch} 
                             placeholderTextColor='#999'
                             placeholder="A onde você irá chegar?"
                             onChangeText={texto => (this.props.modificaOrigem(texto))}
@@ -405,7 +437,19 @@ const longitudeDelta = ASPECT_RATIO * latitudeDelta;
                     </InputGroup>
             </View>
             </View>
-             
+            <View style={styles.containerInformacoes}>
+            <View style={styles.informacaoVigia}>
+              <View style={{flex:6, marginHorizontal: 10}}></View>
+              {this.props.solicitado === true && (
+                <View style={styles.placaVigiaContainer}>
+                  <Text style={{fontWeight: 'bold', fontSize:12, color:'#323232'}}>DTY-8574</Text>
+                </View>
+              )}
+              {this.props.solicitado === false && (
+                <View style={{flex:2, marginHorizontal:10}}></View>
+              )}
+              
+            </View>
               <View style={styles.confirmarContainer}>
                 <View style={styles.tempoMoradorContainer}>
                   <Image source={require('../Images/morador_icone.png')} style={{ height: 20, width: 20}} />
@@ -417,6 +461,8 @@ const longitudeDelta = ASPECT_RATIO * latitudeDelta;
                   <Text style={{fontWeight: 'bold', fontSize:14, color:'#323232'}}>  {Math.round(this.state.tempoVigia)} min.</Text>
                 </View>
               </View>
+            </View>
+              
                      
             { this._renderListaEnderecos() }
 
@@ -472,13 +518,17 @@ const styles = StyleSheet.create({
         marginLeft: 15, 
         marginRight: 10,
         marginTop: 0,
-        backgroundColor: '#fff',
+        backgroundColor: '#eee',
         opacity: 0.9,
         borderRadius: 7,
     },
     inputSearch: {
         fontSize: 14,
         color:'#fff'
+    },
+    secondInputSearch: {
+      fontSize: 14,
+      color:'#323232'
     },
     label: { 
         fontSize: 10,
@@ -553,7 +603,20 @@ const styles = StyleSheet.create({
     confirmarContainer: {
       flexDirection: 'row',
       height:35,
-      marginBottom:20
+      flex:1
+    },
+    informacaoVigia: {
+      alignItems: 'flex-end',
+      justifyContent: 'flex-end',
+      flex:1,
+      flexDirection:'row',
+      marginBottom: 10,
+    },
+    containerInformacoes: {
+      flexDirection: 'column',
+      marginBottom:20,
+      width: '100%',
+      height: 80
     },
     tempoMoradorContainer: {
       borderRadius:3, 
@@ -576,6 +639,19 @@ const styles = StyleSheet.create({
       justifyContent: 'center',
       alignItems: 'center',
       flexDirection: 'row',
+    },
+    placaVigiaContainer: {
+      borderRadius:3, 
+      width: 20,
+      height: 35,
+      flex:2,
+      marginHorizontal: 10,
+      marginLeft: 10,
+      elevation:4,
+      backgroundColor: "#fff",
+      justifyContent: 'center',
+      alignItems: 'center',
+      flexDirection: 'row',
     }
 }); 
 
@@ -584,9 +660,11 @@ const mapStateToProps = state => (
   {
     
       origemEnderecoSelecionado: state.MapsReducer.origemEnderecoSelecionado,
+      destinoEnderecoSelecionado: state.MapsReducer.destinoEnderecoSelecionado,
       region_latitude: state.MapsReducer.region_latitude,
       region_longitude: state.MapsReducer.region_longitude,
       origem: state.MapsReducer.origem,
+      destino: state.MapsReducer.destino,
       resultadoOrigem: state.MapsReducer.resultadoOrigem,
       resultadoDestino: state.MapsReducer.resultadoDestino,
       latitudeCasa: state.MapsReducer.latitudeCasa,
